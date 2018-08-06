@@ -1,4 +1,4 @@
-# gals
+# GALS
 Gerador de Analisadores Léxicos e Sintáticos
 
 Este projeto é um gerador de Analisadores Léxicos e Sintáticos, escrito em Java.

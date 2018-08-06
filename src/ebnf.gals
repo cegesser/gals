@@ -1,0 +1,62 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Scanner
+ParserName = Parser
+SemanticName = Generator
+Package = gesser.gals.grammar.parser
+ScannerCaseSensitive = true
+ScannerTable = FULL
+Input = STREAM
+Parser = LL
+#RegularDefinitions
+
+#Tokens
+"*"
+"+"
+"?"
+"("
+")"
+"|"
+";"
+"::="
+T : \" [^\"\n\r\s\t]+ \" | [A-Za-z_]+
+NT : <[A-Za-z_]+>
+SA : #[0-9]+
+EPSILON : î
+
+WS : [\s\t\n\r]*
+COMMENT : / / [^\n\r]*
+#NonTerminals
+<G>
+<G_>
+<P>
+<PLIST>
+<PLIST_REP>
+<RHS>
+<RHS_REP>
+<ITEM>
+<S>
+<CARD>
+<X>
+#Grammar
+<G> ::= <P> <G_>;
+<G_> ::= <G> | î ;
+
+<P> ::= NT #1 "::=" <PLIST> ";" #2;
+
+<PLIST> ::= #3 <RHS> #4<PLIST_REP>;
+<PLIST_REP> ::= "|" #3 <RHS> #4 <PLIST_REP> | î ;
+
+<RHS> ::= <ITEM> <RHS_REP> | EPSILON ;
+<RHS_REP> ::= <ITEM> <RHS_REP> | î ;
+
+<ITEM> ::= <S> #5 <CARD> | <X> #6 <CARD> ;
+
+<CARD> ::= #7 | "*" #8 | "+" #9 | "?" #10 ;
+
+<S> ::= T | NT | SA;
+
+<X> ::= "(" #11 <PLIST> ")" #12 ;
+

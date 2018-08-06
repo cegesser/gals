@@ -1,0 +1,922 @@
+<!DOCTYPE / HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<head>
+  <title>Documentação GALS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <meta name="GENERATOR" content="Quanta Plus">
+</head>
+<body>
+
+<p>
+<div align="center"><h1>GALS</h1>
+<h2>Gerador de Analisadores Léxicos e Sintáticos</h2></div>
+<a name="Topo"></a>
+<p><a href="#Intro">Introdu&ccedil;&atilde;o</a><br>
+  <a href="#Opcoes">Opções</a><br>
+  &nbsp;&nbsp;<a href="#Opcoes_Gerais">Opções Gerais</a><br>
+  &nbsp;&nbsp;<a href="#Opcoes_do_Analisador_Lexico">Opções do Analisador Léxico</a><br>
+  &nbsp;&nbsp;<a href="#Opcoes_do_Analisador_Sintatico">Opções do Analisador Sintático</a><br>
+  <a href="#Definicao_dos_Aspectos_Lexicos">Definição de Aspectos Léxicos</a><br>
+  &nbsp;&nbsp;<a href="#Definicoes_Regulares">Definições Regulares</a><br>
+  &nbsp;&nbsp;<a href="#Tokens">Tokens</a><br>
+  &nbsp;&nbsp;<a href="#Expressoes_Regulares">Expressões Regulares</a><br>
+  &nbsp;&nbsp;<a href="#Exemplo_Definicao_dos_Aspectos_Lexicos">Exemplo</a><br>
+  <a href="#Definicao_dos_Aspectos_Sintaticos">Definição de Aspectos Sintáticos</a><br>
+  &nbsp;&nbsp;<a href="#Simbolos_Terminais_Tokens">Símbolos Terminais (Tokens)</a><br>
+  &nbsp;&nbsp;<a href="#Simbolos_Nao_Terminais" >Símbolos Não-Terminais</a><br>
+  &nbsp;&nbsp;<a href="#Producoes" >Produções</a><br>
+  &nbsp;&nbsp;<a href="#Restricoes" >Restrições</a><br>
+  &nbsp;&nbsp;<a href="#Exemplo_Definicao_dos_Aspectos_Sintaticos" >Exemplo</a><br>
+  <a href="#Definicao_dos_Aspectos_Semanticos">Definição de Aspectos Semânticos
+  e de Gera&ccedil;&atilde;o de C&oacute;digo</a> <br>
+  &nbsp;&nbsp;<a href="#Exemplo_Definicao_dos_Aspectos_Semanticos" >Exemplo</a><br>
+  <a href="#Utilizacao_do_Codigo_Gerado">Utiliza&ccedil;&atilde;o do C&oacute;digo Gerado</a><br>
+  &nbsp;&nbsp;<a href="#Analisador_Lexico">Analisador L&eacute;xico</a><br>
+  &nbsp;&nbsp;<a href="#Analisador_Sintatico">Analisador Sint&aacute;tico</a><br>
+  &nbsp;&nbsp;<a href="#Analisador_Semantico">Analisador Sem&acirc;ntico</a><br>
+  &nbsp;&nbsp;<a href="#Tabelas_de_Erros">Tabelas de Erros</a><br>
+  &nbsp;&nbsp;<a href="#Tratamento_de_Excecoes">Tratamento de Exceções</a><br>
+</p>
+<hr>
+<h2><a name="Intro"></a>Introdu&ccedil;&atilde;o</h2>
+<p> GALS &eacute; um ambiente para a gera&ccedil;&atilde;o de analisadores l&eacute;xicos
+  e sint&aacute;ticos, desenvolvido por Carlos Eduardo Gesser como trabalho de
+  conclus&atilde;o de curso do Curso de Bacharelado em Ci&ecirc;ncias da Computa&ccedil;&atilde;o,
+  da Universidade Federal de Santa Catarina, sendo desenvolvido sob a orienta&ccedil;&atilde;o
+  do Prof. Olinto Jos&eacute; Varela Furtado.</p>
+<p>Esta ferramenta pode ser obtida em <a href="http://gals.sourceforge.net">http://gals.sourceforge.net</a>.<br>
+  GALS &eacute; uma ferramenta de Software Livre. Seu c&oacute;digo fonte &eacute;
+  liberado sob a Licen&ccedil;a Publica GNU. (<a href="http://www.gnu.org">http://www.gnu.org</a>).</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h2><a name="Opcoes">Opções</a></h2>
+<p>As opções permitem configurar aspectos dos analisadores gerados.</p>
+<h3><a name="Opcoes_Gerais">Opções Gerais</a></h3>
+<p><b>Gerar</b>
+<ul>
+  <li> Analisador Léxico </li>
+  <li> Analisador Sintático </li>
+  <li> Analisadores Léxico e Sintático </li>
+</ul>
+Esta opção permite definir o modo de trabalho do gerador. Escolhendo a opção
+<i>Analisador Léxico</i>, será gerado apenas um analisador léxico, sendo pedido que o usuário
+entre com a definições dos aspéctos léxicos.
+</p>
+<p>A opção <i>Analisador Sintático</i> gera um analisador sintático completo, e analisadores
+léxico e semântico vazios, que devem ser implementados pelo usuário. Neste modo o usuário
+entra apenas com os aspectos sintáticos.</p>
+<p>A última opção faz com que gera gerado um analisador léxico em conjunto com um sintático.
+Será gerado ainda um analisador semantico vazio, para a implementação do usuário.
+</p>
+<p><b>Linguagem</b>
+<ul>
+  <li> Java </li>
+  <li> C++ </li>
+  <li> Delphi </li>
+</ul>
+Está opção permite ao usuário escolher a linguagem em que o analisador será gerado.
+</p>
+<p><b>Classes</b>
+<ul>
+  <li> Analisador Léxico </li>
+  <li> Analisador Sintático </li>
+  <li> Analisador Semântico </li>
+  <li> Package/Namespace </li>
+</ul>
+Estas são opções para que o usuário possa ter controle sobre os nomes das classes geradas.<br>
+Para Java e C++ pode-se especificar a <i>package</i> e o <i>namespace</i> respectivamente
+onde serão geradas as classes (o que é recomendavel).<br>
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Opcoes_do_Analisador_Lexico">Opções do Analisador Léxico</a></h3>
+<p><b>Forma de Entrada</b>
+<ul>
+  <li> Stream </li>
+  <li> String </li>
+</ul>
+Pode-se escolher de onde o analisador léxico gerado irá obter seu fluxo de caracteres: de uma
+classe de <i>stream</i> (geralmente utilizada para se ler diretamente de um arquivo) ou de
+uma <i>string</i> contendo toda a entrada a ser processada (que pode ser obtida de um
+componente de interface gráfica, por exemplo).
+</p>
+<p><b>Implementação do Autômata</b>
+<ul>
+  <li> Tabela Completa </li>
+  <li> Tabela Comprimida </li>
+  <li> Específica </li>
+</ul>
+O analisador léxico é implementado sobre um autômato finito. Esta opção permite escolher sua
+forma de implementação. As duas primeiras opções geram um analisador genérico, com uma tabela
+de transições. A primeira opção gera uma tabela simples, que permite o acesso mais rápido, a
+custa de espaço (na grande maioria dos casos a tabela gerada é bem esparsa).<br>
+A segunda opção gera uma tabela comprimida, mais eficiente em termos de espaço (em casos de
+tabelas esparsas), mas de desempenho inferior em tempo de busca.<br>
+A última opção gera um analisador específico, com as transições programadas diratamente dentro
+do analisador léxico, o que pode serar um analisador bem eficiente. A desvantagem desta opção
+é que qualquer alteracão na especificação léxica requer a recompilação do analisador,
+enquanto que nas outras opções basta recompilar o arquivo de constantes.
+</p>
+<p>
+<b>Diferencias maiúscula/minúscula em casos especiais</b>
+</p>
+<p>
+O analisador gerado sempre passa os tokens ao sintático (que passa ao semântico) exatamente
+como eles estavam no texto original, sem qualquer conversão entre maiúsculas e minúsculas.<br>
+Se se pretende gerar um analisador que não faça diferenciação entre maiúsculas minúsculas para
+os identificadores, esta capacidade deve ser programada em nível semântico.<br>
+Então para que serve esta opção?
+</p>
+<p>
+Esta opção tem a ver com casos especiais, utilizados (geralmente) para a definição de palavras
+chave. Com esta opçào desabilitada, tanto <i>Begin</i> quanto <i>begin</i> quanto <i>BEGIN
+</i> seriam reconhecidos como o mesmo token, caso se tenha um caso especial de identificador
+com a representação igual a <i>begin</i>.
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Opcoes_do_Analisador_Sintatico">Opções do Analisador Sintático</a></h3>
+<p><b>Classe do Analisador Sintático</b>
+<ul>
+  <li> Descendente Recursivo </li>
+  <li> LL(1) </li>
+	<br>
+  <li> SLR(1) </li>
+  <li> LALR(1) </li>
+  <li> LR(1) Canônico </li>
+</ul>
+Esta opção controla o tipo do analisador seintático que será gerado. Algumas classes impõem
+restrições sobre a gramática que aceitam, que devem ser observadas quando se for descrevê-la<br>
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h2><a name="Definicao_dos_Aspectos_Lexicos">Definição dos Aspectos Léxicos</a></h2>
+<p>
+Os aspectos léxicos de uma especificação GALS são definidos pela declaração
+dos Tokens e pela declaração de Definições Regulares.<br>
+  Os Tokens definem quais construções léxicas serão aceitas pelo Scanner e o valor
+  léxico de cada uma destas constru&ccedil;&otilde;es.<br>
+As Definições Regulares atuam como expressões auxiliares para a definição de Tokens.</p>
+<p> O Analisador Léxico gerado utilizará as expressões regulares dos token para
+  a criação de um Aut&ocirc;mato Finito com m&uacute;ltiplos estados finais, cada
+  um deles correspondendo a um dos Tokens declarados. </p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Definicoes_Regulares"></a>Definições Regulares</h3>
+<p>
+Uma definição sempre segue a forma:<br>
+<pre>[identificador] : [expressão regular]</pre>
+Cada linha do campo de definições pode conter apenas uma definição regular.<br>
+As definições aqui declaradas poderão ser utilizadas em outras expressões regulares,
+utilizando seu identificador entre { e }.<br>
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Tokens"></a>Tokens</h3>
+<p>
+Antes de se mostrar como são declarados os Tokens é preciso se dar uma pequena explicação
+sobre o funcionamento do analisador léxico.
+</p>
+<p> O analisador gerado funciona simulando um autômato finito, rodando em cima 
+  de uma tabela de transições. O analisador verifica o próximo caractere da entrada 
+  e o estado atual do autômato (inicialmente zero) e move o aut&ocirc;mato para 
+  seu próximo estado.<br>
+  Se eventualmente o aut&ocirc;mato chegar a um estado final, sempre correspondente 
+  a um token, ele ainda não pode dar a análise deste token como conclu&iacute;da, 
+  pois é preciso tentar identificar a seqüência de caracteres mais longa possível
+  (um analisador para Pascal não pode identificar o token &quot;:&quot; no momento 
+  que encontrar este caractere, ele precisa continuar, pois pode ser que o token 
+  seja &quot;:=&quot;).<br>
+Assim, o analisador somente para quando não consegue mais prosseguir na tabela de transições.
+Se durante este processo ele encontrou algum token, ele produz o token correspondente ao
+último estado final alcançado (a seqüência mais longa de caracteres). Se nenhum token foi
+encontrado então um erro léxico é gerado.
+</p>
+<p>
+Existem diversos meio para a definição de Tokens, cada um deles mais adequado
+a um tipo de Token.<br>
+Como nas Definições Regulares, aqui também só é permitida a declaração de um token por linha.
+</p>
+<h4>Definindo Token a partir do identificador</h4>
+<p> Pode-se declarar um token apenas declarando um identificador para ele. Esta 
+  é a forma mais simples de se declarar um token, porém a menos flex&iacute;vel.<br>
+Pode-se utilizar duas formas de identificadores:
+<ul>
+  <li>Identificadores Normais</li>
+  <li>Qualquer sequência de caracteres entre aspas (&quot;)</li>
+</ul>
+Um token declarado desta forma irá gerar um aut&ocirc;mato finito que identifica 
+o pr&oacute;prio identificador, ou seja, sempre que o analisador encontrar a sequência
+de caracteres relativa ao identificador ele produzirá o Token correspondente. 
+Por exemplo: </p> 
+<p>
+<b>begin</b> identificaria begin, e<br>
+<font color="red">&quot;!=&quot;</font> identificaria !=.
+</p>
+<h4>Definindo Token a partir de uma Expressão Regular</h4>
+<p> Esta é a forma mais gen&eacute;rica de se definir um token. Seu caso mais 
+  geral é idêntico à declaração de uma Definição Regular: 
+<pre>[identificador] : [expressão regular]</pre>
+Sempre que o analisador identificar a expressão regular ele produzirá o token 
+correspondente.</p> 
+<p>
+Pode-se especificar para um token uma segunda expressão regular, chamada neste caso de
+contexto.
+<pre>[identificador] : [expressão regular] ^ [expressão de contexto]</pre>
+Se um contexto for especificado, sempre que o token vier a ser identificado, o
+analisador tenta analisar a expressão de contexto. Se a expressão não puder ser encontrada
+após o token o analisador considera este token como inválido (como se chegasse a um ponto
+sem transição possível na tabela de transições).<br>
+Esta construção pode ser entendida como: somente identifique este token se, depois dele, for
+possível identificar a expressão de contexto.<br>
+O contexto é analisado, porém não é consumido pelo analisador léxico.
+</p>
+<p>
+Podem existir casos em que ao ser encontrado um erro (nenhuma transição possível), este deve
+ser reportado de qualquer forma, mesmo que durante a análise deste token tenha-se encontrado
+outros tokens validos possíveis.<br>
+  Por exemplo: em uma linguagem com comentários delimitados por &quot;(*&quot; 
+  e &quot;*)&quot;, um comentário não fechado seria um erro. Este erro fará com 
+  que o analisador verifique se durante a análise ele não encontrou nenhum outro 
+  token valido. Se a linguagem também possuir a declaração de um token correspondente 
+  a &quot;(&quot;, o analisador o teria encontrado nesse processo, o retornaria, 
+  continuando a análise a partir do &quot;*&quot; do comentário. Para prevenir 
+  isto, o token correspondente ao comentário deveria ser declarado desta forma: 
+<pre>[identificador] :! [expressão regular]</pre>
+Um token declarado deste modo não verifica outros tokens validos encontrados antes em caso de
+erro.
+</p>
+<p>
+Nos três casos, o identificador pode ser omitido (a declaração começa diretamente pelo
+&quot;:&quot; ou &quot;:!&quot;).<br>
+  Quando o identificador não é fornecido, o analisador gerado passa a ignorar 
+  tokens gerados pela expressão regular correspondente.<br>
+Deste modo pode-se fornecer expressões para comentários e caracteres de espaço em branco
+(espaço, quebra de linha, tabulação, etc.) para que o analisador gerado ignore.
+</p>
+<h4>Definindo Token como caso especial de outro Token</h4>
+<p>
+Pode-se definir um token como sendo um caso particular de um outro token base.<br>
+Nestes casos, sempre que o analisador identifica o token base, ele procura pelo valor do token
+em uma lista de casos especiais. Se for encontrado, o caso especial é retornado, senão é
+produzido o token base. Esta declaração é feita da seguinte forma:
+<pre>[identificador] = [token base] : [valor]</pre>
+onde token base é um token declarado previamente, e valor é uma sequência de caracteres entre
+aspas.
+</p>
+<p>
+Como pode-se deduzir, esta construção é especialmente útil para a declaração das palavras
+reservadas de uma linguagem. Em geral, as palavras reservadas seguem o mesmo padrão dos
+identificadores.<br>
+  Utilizar esta constru&ccedil;&atilde;o faz com que o aut&ocirc;mato gerado seja 
+  bem menor de que se cada caso especial fosse declarado como um token comum. 
+  A lista dos casos é gerada em ordem, e a localização de um caso é feita por 
+  busca binária. </p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Expressoes_Regulares"></a>Expressões Regulares</h3>
+<p>
+Esta tabela ilustra as possibilidades de expressões regulares. Quaisquer combinações entre
+estes padrões é possível. Espaços em branco são ignorados (exceto entre aspas).
+</p>
+<table border="1" cellpadding="5" cellspacing="0" bordercolor="#000000">
+  <tr>
+    <td width="46">a</td>
+    <td width="441">reconhece a</td>
+  </tr>
+  <tr>
+    <td>ab</td>
+    <td>reconhece a seguido de b</td>
+  </tr>
+  <tr>
+    <td>a|b</td>
+    <td>reconhece a ou b</td>
+  </tr>
+  <tr>
+    <td>[abc]</td>
+    <td>reconhece a, b ou c</td>
+  </tr>
+  <tr>
+    <td>[^abc]</td>
+    <td>reconhece qualquer caractere, exceto a, b e c</td>
+  </tr>
+  <tr>
+    <td>[a-z]</td>
+    <td>reconhece a, b, c, ... ou z</td>
+  </tr>
+  <tr>
+    <td>a*</td>
+    <td>reconhece zero ou mais a's</td>
+  </tr>
+  <tr>
+    <td>a+</td>
+    <td>reconhece um ou mais a's</td>
+  </tr>
+  <tr>
+    <td>a?</td>
+    <td>reconhece um a ou nenhum a.</td>
+  </tr>
+  <tr>
+    <td>(a|b)*</td>
+    <td>reconhece qualquer número de a's ou b's</td>
+  </tr>
+  <tr>
+    <td><strong>.</strong></td>
+    <td>reconhece qualquer caractere, exceto quebra de linha</td>
+  </tr>
+  <tr>
+    <td>\123</td>
+    <td>reconhece o caractere ASCII 123 (decimal)</td>
+  </tr>
+</table>
+<p> Os operadores posfixos (*, + e ?) tem a maior prioridade. Em seguida está 
+  a concatenação e por fim a união ( | ). Par&ecirc;nteses podem ser utilizador 
+  para agrupar símbolos. </p>
+<p> Os caracteres <code>&quot; \ | * + ? ( ) [ ] { } . ^ -</code> possuem significado 
+  especial. Para utilizá-los como caracteres normais deve-se precedê-los por \, 
+  ou colocá-los entre aspas. Qualquer seqüência de caracteres entre aspas é tratada 
+  como caracteres ordinários. </p>
+<table border="1" cellpadding="5" cellspacing="0" bordercolor="#000000">
+  <tr>
+    <td width="40">\+</td>
+    <td width="440">reconhece +</td>
+  </tr>
+  <tr>
+    <td>&quot;+*&quot;</td>
+    <td>reconhece + seguido de *</td>
+  </tr>
+  <tr>
+    <td>&quot;a&quot;&quot;b&quot;</td>
+    <td>reconhece a, seguido de &quot;, seguido de b</td>
+  </tr>
+  <tr>
+    <td>\&quot;</td>
+    <td>reconhece &quot;</td>
+  </tr>
+</table>
+<p>
+Existem ainda os caracteres não imprimíveis, representados por seqüências de escape
+</p>
+<table border="1" cellpadding="5" cellspacing="0" bordercolor="#000000">
+  <tr>
+    <td width="40">\n</td>
+    <td width="433">Line Feed</td>
+  </tr>
+  <tr>
+    <td>\r</td>
+    <td>Carriage Return</td>
+  </tr>
+  <tr>
+    <td>\s</td>
+    <td>Espaço</td>
+  </tr>
+  <tr> 
+    <td>\t</td>
+    <td>Tabulação</td>
+  </tr>
+  <tr>
+    <td>\b</td>
+    <td>Backspace</td>
+  </tr>
+  <tr>
+    <td>\e</td>
+    <td>Esc</td>
+  </tr>
+  <tr>
+    <td>\XXX</td>
+    <td>O caractere ASCII XXX (XXX &eacute; um n&uacute;mero decimal)</td>
+  </tr>
+</table>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Exemplo_Definicao_dos_Aspectos_Lexicos"></a>Exemplo</h3>
+<h4>Definições Regulares</h4>
+<pre><code>
+L  <font color="blue">:</font> <font color="green">[A-Za-z]</font>
+D  <font color="blue">:</font> <font color="green">[0-9]</font>
+WS <font color="blue">:</font> <font color="green">[\ \t\n\r]</font>
+COMMENT <font color="blue">:</font> <font color="green">"(*" [^ "*" ]* "*)"</font>
+</code></pre>
+<h4>Tokens</h4>
+<pre><code>
+<i><font color="gray">//pontuação</font></i><font color="red">
+&quot;(&quot;
+&quot;)&quot;
+&quot;;&quot;
+</font>
+<i><font color="gray">//tokens</font></i>
+id <font color="blue">:</font> <font color="green">{L} ( {L} | {D} | _ )*</font>
+num <font color="blue">:</font> <font color="green">{D}+ ^ [^ {L} ]</font><i><font color="gray">//um ou mais d&iacute;gitos, seguido de qqr char menos letra</font></i>
+
+<i><font color="gray">//palavras chave</font></i>
+begin <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;begin&quot;</font>
+end   <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;end&quot;</font>
+if    <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;if&quot;</font>
+then  <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;then&quot;</font>
+else  <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;else&quot;</font>
+while <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;while&quot;</font>
+do    <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;do&quot;</font>
+write <font color="blue">=</font> id <font color="blue">:</font> <font color="red">&quot;write&quot;</font>
+
+<i><font color="gray">//ignorar espaços em branco e coment&aacute;rios</font></i>
+ <font color="blue">:</font> <font color="green">{WS}*</font>
+ <font color="blue">:!</font> <font color="green">{COMMENT}</font>
+</code></pre>
+<a href="#Topo">Topo</a>
+<hr>
+<h2><a name="Definicao_dos_Aspectos_Sintaticos">Definição dos Aspectos Sintáticos</a></h2>
+<p>
+Os Aspectos Sintáticos são compostos pela declaração de Símbolos Terminais (Tokens), Símbolos
+Não-Terminais e Produções.
+</p>
+<h3><a name="Simbolos_Terminais_Tokens"></a>Símbolos Terminais (Tokens)</h3>
+<p>
+O modo como estes símbolos são declarados depende do tipo de projeto que esta sendo feito.
+</p>
+<h4>Analisadores Léxico e Sintático conjuntos</h4>
+<p>
+Neste tipo de projeto os Tokens declarados na Especificação Léxica são tomados como Símbolos
+Terminais.
+</p>
+<h4>Analisador Sintático sozinho</h4>
+<p>
+Aqui os Tokens devem ser declarados explicitamente. Um Token pode ser declarado desta forma
+pode ser definido por um Identificador, ou uma expressão qualquer entre aspas. Cada linha
+deve conter a declaração de apenas um Token.
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Simbolos_Nao_Terminais"></a>Símbolos Não-Terminais</h3>
+<p> O S&iacute;mbolos N&atilde;o-Terminais devem ser todos declarados antes de
+  poderem ser utilizados em produ&ccedil;&otilde;es. Sua forma &eacute; a de um
+  identificador entre <code>&lt;</code> e <code>&gt;</code>. Assim como no caso
+  dos Tokens, apenas um s&iacute;mbolo pode ser declarado por linha.</p>
+<p>O primeiro s&iacute;mbolo declarado &eacute; considerado o s&iacute;mbolo inicial
+  da gram&aacute;tica.</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Producoes"></a>Produções</h3>
+<p> A declara&ccedil;&atilde;o das produ&ccedil;&otilde;es segue um formato baseado
+  na nota&ccedil;&atilde;o BNF:</p>
+<p><code>&lt;n&atilde;o-terminal&gt; ::= &lt;lista de s&iacute;mbolos&gt; | &lt;lista 
+  de s&iacute;mbolos&gt; | ... ;</code></p>
+<p>Pode-se agrupar as defini&ccedil;&otilde;es ou deix&aacute;-las separadas, 
+  ou seja:</p>
+<p><code>&lt;A&gt; ::= &lt;B&gt; | &lt;C&gt; ;</code></p>
+<p>&eacute; igual a:</p>
+<p><code>&lt;A&gt; ::= &lt;B&gt; ;<br>
+  &lt;A&gt; ::= &lt;C&gt;;</code></p>
+<p><code>Somente s&atilde;o aceitos nas produ&ccedil;&otilde;es s&iacute;mbolos 
+  j&aacute; previamente declarados. O uso de um s&iacute;mbolo (terminal ou n&atilde;o=terminal) 
+  n&atilde;o declarado gera um erro sem&acirc;ntico.<br>
+  Uma exce&ccedil;&atilde;o a essa regra diz respeito ao s&iacute;mbolo terminal 
+  especial <font color="#FF00FF"><strong>&icirc;</strong></font> (letra i, com 
+  um acento circunflexo), que representa o s&iacute;mbolo <em>epsilon</em> (senten&ccedil;a 
+  vazia).</code></p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Restricoes"></a>Restrições</h3>
+<p> Existem restri&ccedil;&otilde;es impostas &agrave; forma das produ&ccedil;&otilde;es, 
+  de acordo com a classe de analisador sint&aacute;tico que se pretende gerar. 
+  Para Analisadores Descendentes (LL e Descendente Recursivo) n&atilde;o &eacute; 
+  permitido que a gram&aacute;tica possua Recurs&atilde;o &agrave; Esquerda ou 
+  que n&atilde;o esteja na sua Forma Fatorada. A tentativa de se gerar um analisador 
+  com uma gram&aacute;tica neste estado resultar&aacute; em erro. A terceira restri&ccedil;&atilde;o 
+  para gram&aacute;ticas LL &eacute; checada, mas n&atilde;o impede que seja gerado 
+  o analisador. Enquanto as duas outras restri&ccedil;&otilde;es podem ser facilmente
+  removidas aplicando-se algoritmos de transforma&ccedil;&atilde;o &agrave; gram&aacute;tica, 
+  esta ultima n&atilde;o o &eacute;. Gram&aacute;ticas com este problema s&atilde;o 
+  amb&iacute;guas, e durante a gera&ccedil;&atilde;o do analisador ser&aacute; 
+  pedido ao usu&aacute;rio para indicar qual produ&ccedil;&atilde;o deve ser escolhida 
+  para eliminar a ambiguidade.</p>
+<p>Analisadores Ascendentes (LR, LALR e SLR) n&atilde;o possuem problemas com 
+  recurs&atilde;o &agrave; esquerda ou fatora&ccedil;&atilde;o, mas mesmo assim 
+  n&atilde;o conseguem tratar gram&aacute;ticas ambiguas. Neste caso, assim como 
+  nas analisadores descendentes, o usu&aacute;rio dever&aacute; escolher em casos 
+  de ambiguidade entre empilhar um s&iacute;mbolo ou reduzir por uma produ&ccedil;&atilde;o, 
+  ou ent&atilde;o entre duas produ&ccedil;&otilde;es atraves das quais se pode 
+  reduzir.</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Exemplo_Definicao_dos_Aspectos_Sintaticos"></a>Exemplo</h3>
+<h4> Tokens</h4>
+<pre><code><font color="red">&quot;(&quot;
+&quot;)&quot;
+&quot;;&quot;</font>
+id
+num
+begin
+end
+if
+then
+else
+while
+do
+write</code></pre>
+<h4>N&atilde;o-Terminais</h4>
+<pre><code><b>&lt;C&gt;
+&lt;C_LIST&gt;
+&lt;IF&gt;
+&lt;ELSE&gt;
+&lt;WHILE&gt;
+&lt;WRITE&gt;
+&lt;E&gt;</b></code></pre>
+<h4>Produ&ccedil;&otilde;es</h4>
+<pre><code><strong>&lt;C&gt;</strong> <font color="#0000FF">::=</font> <strong>&lt;IF&gt;</strong>
+      <font color="#0000FF">|</font> <strong>&lt;WHILE&gt;</strong>
+      <font color="#0000FF">|</font> <strong>&lt;WRITE&gt;</strong>
+      <font color="#0000FF">|</font> begin <strong>&lt;C_LIST&gt;</strong> end<font color="#0000FF">;</font>
+<strong>&lt;C_LIST&gt;</strong> <font color="#0000FF">::=</font> <strong>&lt;C&gt; <font color="#FF0000">&quot;</font></strong><font color="#FF0000">;&quot;</font> <strong>&lt;C_LIST&gt;</strong>
+      <font color="#0000FF">|</font><strong><font color="#FF00FF">&icirc;</font></strong><font color="#0000FF">;</font>
+<strong>&lt;IF&gt;</strong> <font color="#0000FF">::= </font>if <strong>&lt;E&gt;</strong> then <strong>&lt;C&gt; &lt;ELSE&gt;</strong><font color="#0000FF">;</font>
+<strong>&lt;ELSE&gt;</strong> <font color="#0000FF">::= </font>else <strong>&lt;C&gt; </strong>
+      <font color="#0000FF">|</font> <strong><font color="#FF00FF">&icirc;</font></strong>;
+<strong>&lt;WHILE&gt;</strong> <font color="#0000FF">::= </font>while <strong>&lt;E&gt;</strong> do <strong>&lt;C&gt;</strong><font color="#0000FF">;</font>
+<strong>&lt;WRITE&gt;</strong> <font color="#0000FF">::=</font> write <font color="#FF0000">&quot;(&quot;</font> <strong>&lt;E&gt;</strong> <font color="#FF0000">&quot;)&quot;</font><font color="#0000FF">;</font>
+<strong>&lt;E&gt;</strong> <font color="#0000FF">::=</font> id
+      <font color="#0000FF">|</font> num<font color="#0000FF">;</font></code></pre>
+<p>Obs. 1: Pode-se utilizar neste exemplo os tokens do exemplo do analisador l&eacute;xico.<br>
+  Obs. 2: Esta gram&aacute;tica &eacute; amb&iacute;gua. Para gerar-se um analisador
+  descendente &eacute; preciso escolher a produ&ccedil;&atilde;o <code>&lt;ELSE&gt;
+  ::= else &lt;C&gt;</code> durante a etapa de resolu&ccedil;&atilde;o de ambig&uuml;idades,
+  e para analisadores ascendentes deve-se escolher empilhar &quot;else&quot;.</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h2><a name="Definicao_dos_Aspectos_Semanticos">Definição dos Aspectos Semânticos</a>
+  e de Gera&ccedil;&atilde;o de C&oacute;digo</h2>
+<p> Aspectos Sem&acirc;nticos s&atilde;o definidos atraves da introdu&ccedil;&atilde;o 
+  de A&ccedil;&otilde;es Sem&acirc;nticas dentro das produ&ccedil;&otilde;es da 
+  especifica&ccedil;&atilde;o sint&aacute;tica. Estas a&ccedil;&otilde;es s&atilde;o 
+  da forma:</p>
+<p><code>#&lt;n&uacute;mero&gt;</code></p>
+<p>Durante a analise sint&aacute;tica, a&ccedil;&atilde;o sem&acirc;nticas instruem 
+  o analisador sint&aacute;tico a envocar o analisador sem&acirc;ntico, passando-lhe 
+  como par&acirc;metros o n&uacute;mero da a&ccedil;&atilde;o, e o mais recente 
+  token produzido pelo analisador l&eacute;xico. Cabe ao usu&aacute;rio implementar 
+  as a&ccedil;&otilde;es sem&acirc;nticas, na linguagem de destino.</p>
+<p>Estas a&ccedil;&otilde;es podem ser respons&aacute;veis por tarefas de an&aacute;lise 
+  sem&acirc;ntica (adicionar algum s&iacute;mbolo &agrave; tabela de s&iacute;mbolos, 
+  checar tipos, verificar se um s&iacute;mbolo ja foi declarado, etc) ou pela 
+  gera&ccedil;&atilde;o de c&oacute;digo (fazendo-se com que a a&ccedil;&atilde;o 
+  sem&acirc;ntica chame o gerador de c&oacute;digo).</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Exemplo_Definicao_dos_Aspectos_Semanticos"></a>Exemplo</h3>
+<p>Foram colocadas na gram&aacute;tica do exemplo anterior algumas a&ccedil;&otilde;es. 
+  Cabe ao usu&aacute;rio dar sentido a elas, implementando-as.</p>
+<p>A a&ccedil;&atilde;o 2 poderia ser respos&aacute;vel por checar o tipo da express&atilde;o 
+  e gerar o c&oacute;digo para imprimir seu valor.</p>
+<pre><code><strong>&lt;C&gt;</strong> <font color="#0000FF">::=</font> <strong>&lt;IF&gt;</strong>
+      <font color="#0000FF">|</font> <strong>&lt;WHILE&gt;</strong>
+      <font color="#0000FF">|</font> <strong>&lt;WRITE&gt;</strong>
+      <font color="#0000FF">|</font> begin <strong>&lt;C_LIST&gt;</strong> end<font color="#0000FF">;</font>
+<strong>&lt;C_LIST&gt;</strong> <font color="#0000FF">::=</font> <strong>&lt;C&gt; <font color="#FF0000">&quot;</font></strong><font color="#FF0000">;&quot;</font> <strong>&lt;C_LIST&gt;</strong>
+      <font color="#0000FF">| </font><strong><font color="#FF00FF">&icirc;</font></strong><font color="#0000FF">;</font>
+<strong>&lt;IF&gt;</strong> <font color="#0000FF">::= </font>if <strong>&lt;E&gt;</strong> <font color="#009900">#1</font> then <strong>&lt;C&gt; &lt;ELSE&gt;</strong><font color="#0000FF">;</font>
+<strong>&lt;ELSE&gt;</strong> <font color="#0000FF">::= </font>else <strong>&lt;C&gt; </strong>
+      <font color="#0000FF">|</font> <strong><font color="#FF00FF">&icirc;</font></strong>;
+<strong>&lt;WHILE&gt;</strong> <font color="#0000FF">::= </font>while <strong>&lt;E&gt; <font color="#009900">#1</font></strong> do <strong>&lt;C&gt;</strong><font color="#0000FF">;</font>
+<strong>&lt;WRITE&gt;</strong> <font color="#0000FF">::=</font> write <font color="#FF0000">&quot;(&quot;</font> <strong>&lt;E&gt; <font color="#009900">#2</font></strong> <font color="#FF0000">&quot;)&quot;</font><font color="#0000FF">;</font>
+<strong>&lt;E&gt;</strong> <font color="#0000FF">::=</font> id <font color="#009933">#3</font>
+      <font color="#0000FF">|</font> num<font color="#0000FF"> <font color="#009900">#4</font>;</font></code></pre>
+<a href="#Topo">Topo</a>
+<hr>
+<h2><a name="Utilizacao_do_Codigo_Gerado"></a>Utiliza&ccedil;&atilde;o do C&oacute;digo
+  Gerado</h2>
+<p>Será demonstrada agora a forma de utilização dos analisadores.</p>
+<p>Os exemplos serão dados em Java, o uso para as outras linguagens é análogo (exceto em
+casos especiais, que serão demonstrados).</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Analisador_Lexico"></a>Analisador L&eacute;xico</h3>
+<p>
+	Um analisador léxico possui os seguintes métodos:
+	<dl>
+	<dt><code>Lexico();</code></dt>
+	<dd>Construtor padrão</dd>
+	<dt><code>Lexico(String input);</code></dt>
+	<dd>Construtor de inicialização</dd>
+	<dt><code>void setInput(String input);</code></dt>
+	<dd>Método para passar a entrada ao analisador</dd>
+	<dt><code>void setPosition(int pos);</code></dt>
+	<dd>Método para indicar a posição a partir da qual o próximo token deve ser procurado</dd>
+	<dt><code>Token nextToken() throws LexicalError;</code></dt>
+	<dd>Método chamado para se obter o próximo token da entrada</dd>
+	</dl>
+</p>
+<p>
+	No caso de estar utilizando <i>streams</i> como forma de entrada, o construtor de
+	inicialização e o método <i>setInput</i> receberão como parâmetro um objeto da classe
+	<i>Reader</i> (<i>istream</i> em c++ e <i>TStream</i> em Delphi) em vez de uma string.
+</p>
+<p>
+	O método <i>nextToken</i> é o pricipal desta classe. A cada chamada o analisador tenta
+	identificar um token a partir da posição atual na entrada. Existem três resultados possíveis:
+	<dl>
+	<dt>Um token é encontrado</dt>
+	<dd>Neste caso, é retornado um novo objeto da classe Token.</dd>
+	<dt>A posição de leitura era o fim da entrada</dt>
+	<dd>Neste caso é retornado <i>null</i> ao chamador, indicando o fim do fluxo de tokens</dd>
+	<dt>Nenhum token reconhecido</dt>
+	<dd>Se nenhum token foi reconhecido pelo analisador, será lançada uma exceção</dd>
+	</dl>
+</p>
+<p>
+A cada chamada com sucesso, um novo token é alocado. Em C++ e Delphi ele deve ser desalocado
+quando não for mais necessário.
+</p>
+<p>
+O token retornado possui três atributos: seu valor numérico (id), seu valor textual (lexeme)
+e a posição na entrada onde foi encontrado (position).
+</p>
+<h4>Exemplo de uso do Analisador Léxico</h4>
+<dl>
+<dt>Em Java</dt>
+<dd>
+<code><pre>
+Lexico lexico = new Lexico();
+//...
+lexico.setInput( /* entrada */ );
+//...
+try
+{
+    Token t = null;
+    while ( (t = lexico.nextToken()) != null )
+    {
+        System.out.println(t.getLexeme());
+    }
+}
+catch ( LexicalError e )
+{
+    System.err.println(e.getMessage() + &quote;, em &quote; + e.getPosition());
+}</pre></code>
+</dd>
+<dt>Em C++</dt>
+<dd>
+<code><pre>
+Lexico lexico;
+//...
+lexico.setInput( /* entrada */ );
+//...
+try
+{
+    Token *t = 0;
+    while ( (t = lexico-&gt;nextToken()) != 0 )
+    {
+        std::cout &l;t&lt; t-&gt;getLexeme() &lt;&lt; '\n';
+        delete t;
+    }
+}
+catch ( LexicalError &e )
+{
+    std::cerr &lt;&lt; e.getMessage() &lt;&lt; &quote;, em &quote; &lt;&lt; e.getPosition() &lt;&lt; '\n';
+}</pre></code>
+</dd>
+<dt>Em Delphi</dt>
+<dd>
+<code><pre>
+lexico : TLexico;
+t : TToken;
+//...
+lexico := TLexico.create;
+//...
+lexico.setInput( (* entrada *) );
+//...
+try
+    t := lexico.nextToken;
+    while (t &lt;&gt; nil)
+    begin
+        writeln(e.getLexeme);
+        t.Destroy;
+        t := lexico.nextToken;
+    end;
+except
+  on e : ELexicalError do
+    writeln(e.getMessage, ', em ', e.getPosition);
+end;
+//...
+lexico.destroy;</pre></code>
+</dd>
+</dl>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Analisador_Sintatico"></a>Analisador Sint&aacute;tico</h3>
+<p>O analisador sintático possui apenas um método público (além de seu construtor padrão):</p>
+<code>void parse(Lexico scanner, Semantico semanticAnalyser) throws LexicalError, SyntaticError, SemanticError</code>
+<p>Para este método é passado um analisador léxico e um semântico (em c++ via ponteiros).<br>
+Se nenhum erro for detectado, o método termina de forma normal (o analisador semântico deve
+ser programado de forma que ele guarde os resultados finais da análise, se houverem).</p>
+<p>
+Este método é o "coração" do processo de análise, e os erros detectados durante esta devem
+ser tratados pelo chamador deste método.<br>
+Erros léxicos vem do analisador léxico na forma da exceção LexicalError. Erros semânticos
+serão reportados via a exceção SemanticError. O próprio analisador sintático detecta erros, e
+lança a exceção SyntaticError quando os encontra.
+</p>
+<h4>Interface com o Analisador Léxico</h4>
+<p>Sempre que um novo token for preciso, o método nextToken do analisador léxico é envocado.
+É esperado que este método retorne null quando não houverem mais tokens para serem processados,
+e que lance uma exceção LexicalError quando encontre um erro léxico.<br>
+Em C++ e em Delphi, é esperado quea cada chamada o token retornado seja alocado dinamicamente,
+pois o mesmo será desalocado posteriormente (via delete/Destroy);
+</p>
+<h4>Interface com o Analisador Semântico</h4>
+<p>Sempre que uma acao semântica for necessária, o analisador semântico será chamado, pelo
+método executeAction, que recebe de parâmetro o número da ação atual, e o mais recente token
+produzido pelo léxico.<br>
+É esperado que o analisador semântico lance um SemanticError quando encontrar uma situação de
+erro semântico.
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Analisador_Semantico"></a>Analisador Sem&acirc;ntico</h3>
+<p>
+O Analisador Semântico é sempre implementado pelo usuário. Sua interface consiste do método:
+</p>
+<code>void executeAction(int action, Token token)	throws SemanticError;</code>
+<p>
+Os parâmetros indicam a ação semântica que deve ser executada e o mais recente token produzido
+pelo analisador léxico (em c++ ele é passado via ponteiro).
+</p>
+<p>Pode-se implementar de varios modos este método. Para gramáticas com poucas açãoes
+semânticas, pode-se construir um switch/case em função do parametro action e colocar o
+código da ação diretamente dentro deste comando, ou delegar um outro método para executá-la
+(com certeza mais recomendado)<br>
+Em gramáticas com muitas ações, pode ser mais interessante criar um array de <i>callbacks</i>
+, indexado pelo número da ação semântica.</p>
+<p>
+Se um erro semântico for detectado, ele deve ser informado ao analisador sintático lançando
+uma excessão do tipo SemanticError. Isto é importante para manter a uniformidade na detecção
+de erros</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Tabelas_de_Erros"></a>Tabelas de Erros</h3>
+<p>
+As exceções geradas pelos analisadores léxico e sintático utilizam como mensagens de erro
+constates literais declaradas nos arquivos ScannerConstants.java e ParserConstants.java,
+Constants.cpp ou ainda UConstants.pas, dependendo da linguagem objeto.
+</p>
+<p>
+São geradas mensagens padrão, mas na maioria dos casos mensagens personalisadas irão identificar
+melhor os erros para o usuário final da aplicação.
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+<h3><a name="Tratamento_de_Excecoes"></a>Tratamento de Exceções</h3>
+<p>Muitas pessoas não estão familiarizadas com o mecanismo de tratamento de excessões
+utilizado pelo GALS para o tratamento de erros, por isso aqui segue uma breve descrição
+sobre seu funcionamento.</p>
+<h4>Lançando uma exceção</h4>
+<p>
+Em uma situação de erro pode-se lançar uma exceção, indicando este erro. Isto é feito da
+seguite forma:
+<dl>
+<dt>Em Java</dt>
+<dd><code>throw new ClasseDeExcecao(parametros);</code></dd>
+<dt>Em C++</dt>
+<dd><code>throw ClasseDeExcecao(parametros);</code></dd>
+<dt>Em Delphi</dt>
+<dd><code>raise ClasseDeExcecao.Create(parametros);</code></dd>
+</dl>
+</p>
+<h4>Tratando uma exceção</h4>
+<p>
+Quando se executa um pedaço de código que pode eventualmente gerar uma exceção, deve-se tratar
+esta possível condição da seguinte forma:
+<dl>
+<dt>Em Java</dt>
+<dd>
+<code><pre>
+try
+{
+	//codigo que pode gerar exceção
+}
+catch (ClasseDeExcessao e)
+{
+	//trata exceção do tipo ClasseDeExcessao
+}</pre></code>
+</dd>
+<dt>Em C++</dt>
+<dd>
+<code><pre>
+try
+{
+	//codigo que pode gerar exceção
+}
+catch (ClasseDeExcessao &e)
+{
+	//trata exceção do tipo ClasseDeExcessao
+}</pre></code>
+</dd>
+<dt>Em Delphi</dt>
+<dd>
+<code><pre>
+try
+	//codigo que pode gerar exceção
+except on e : ClasseDeExcessao do
+	//trata exceção do tipo ClasseDeExcessao
+end;</pre></code>
+</dd>
+</dl>
+</p>
+<p>As exceções geralmente possuem atributos que indicam o motivo do erro.</p>
+<h4>Exceções no GALS</h4>
+<p>
+As exceções utilizados no GALS possuem dois atributos: uma mensagem de erro e a posição (na
+entrada) onde o erro aconteceu. Existem três classes concretas de exceções:
+<ul>
+  <li> LexicalError </li>
+  <li> SyntaticError </li>
+  <li> SemanticError </li>
+</ul>
+que são produzidas pelos analisadores léxico, sintático e semântico respectivamente. Existe
+ainda uma quarta classe: AnalysisError, que serve de base para as outras três. Quando se for
+tratar os erros gerados pelo método parse do analisador sintático, pode-se tratar cada
+exceção separadamente, ou tratar todas de uma vez só tratando-se AnalysisError.
+<dl>
+<dt>Em Java</dt>
+<dd>
+<code><pre>
+Lexico lexico = new Lexico();
+Sintatico sintatico = new Sintatico();
+Semantico semantico = new Semantico();
+//...
+lexico.setInput( /* entrada */ );
+//...
+try
+{
+    sintatico.parse(lexico, semantico);
+}
+catch ( LexicalError e )
+{
+    //Trada erros léxicos
+}
+catch ( SyntaticError e )
+{
+    //Trada erros sintáticos
+}
+catch ( SemanticError e )
+{
+    //Trada erros semânticos
+}</pre></code>
+</dd>
+<dt>Em C++</dt>
+<dd>
+<code><pre>
+Lexico lexico;
+Sintatico sintatico;
+Semantico semantico;
+//...
+lexico.setInput( /* entrada */ );
+//...
+try
+{
+    sintatico.parse(&lexico, &semantico);
+}
+catch ( LexicalError &e )
+{
+    //Trada erros léxicos
+}
+catch ( SyntaticError &e )
+{
+    //Trada erros sintáticos
+}
+catch ( SemanticError &e )
+{
+    //Trada erros semânticos
+}</pre></code>
+</dd>
+<dt>Em Delphi</dt>
+<dd>
+<code><pre>
+lexico : TLexico;
+sintatico : TSintatico;
+semantico : TSemantico;
+//...
+lexico := TLexico.create;
+sintatico := TSintatico.create;
+semantico := TSemantico.create;
+//...
+lexico.setInput( (* entrada *) );
+//...
+try
+    sintatico.parse(lexico, semantico);
+except
+  on e : ELexicalError do
+    //Trada erros léxicos
+  on e : ESyntaticError do
+    //Trada erros sintáticos
+  on e : ESemanticError do
+    //Trada erros semânticos
+end;
+//...
+lexico.destroy;
+sintatico.destroy;
+semantico.destroy;</pre></code>
+</dd>
+</dl>
+</p>
+<a href="#Topo">Topo</a>
+<hr>
+</body>
+</html>

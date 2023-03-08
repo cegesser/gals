@@ -48,7 +48,9 @@ public class Options
 
 		CPP    { public String toString() { return "C++"; } }, 
 
-		DELPHI { public String toString() { return "Delphi"; } }
+		DELPHI { public String toString() { return "Delphi"; } },
+		
+		CSHARP { public String toString() { return "C#"; } } 
 
 	}
 
@@ -257,6 +259,10 @@ public class Options
 			else if (value.equalsIgnoreCase("Delphi"))
 
 				language = Language.DELPHI;
+			
+			else if (value.equalsIgnoreCase("C#"))
+
+				language = Language.CSHARP;
 
 			else
 

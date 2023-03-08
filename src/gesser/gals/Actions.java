@@ -16,6 +16,8 @@ import gesser.gals.generator.cpp.*;
 
 import gesser.gals.generator.java.*;
 
+import gesser.gals.generator.csharp.*;
+
 import gesser.gals.generator.parser.*;
 
 import gesser.gals.generator.parser.ll.*;
@@ -1135,8 +1137,17 @@ public class Actions
 
 								allFiles.putAll( new DelphiParserGenerator().generate(g, options));
 
-								break;						
+								break;		
+								
+							case CSHARP:
 
+								allFiles.putAll( new CSharpCommonGenerator().generate(fa, g, options) );
+
+								allFiles.putAll( new CSharpScannerGenerator().generate(fa, options) );							
+
+								allFiles.putAll( new CSharpParserGenerator().generate(g, options));
+
+								break;
 						}
 
 						

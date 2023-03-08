@@ -59,6 +59,8 @@ public class OptionsPane extends JPanel implements ChangeListener
 	private JRadioButton langCpp = new JRadioButton("C++");
 
 	private JRadioButton langDelphi = new JRadioButton("Delphi");
+	
+	private JRadioButton langCSharp = new JRadioButton("C#");
 
 	
 
@@ -409,6 +411,8 @@ public class OptionsPane extends JPanel implements ChangeListener
 		lang.add(langCpp);
 
 		lang.add(langDelphi);
+		
+		lang.add(langCSharp);
 
 		
 
@@ -421,6 +425,8 @@ public class OptionsPane extends JPanel implements ChangeListener
 		language.add(langCpp);
 
 		language.add(langDelphi);
+		
+		language.add(langCSharp);
 
 		
 
@@ -433,6 +439,8 @@ public class OptionsPane extends JPanel implements ChangeListener
 		langCpp.addChangeListener(this);
 
 		langDelphi.addChangeListener(this);
+		
+		langCSharp.addChangeListener(this);
 
 		
 
@@ -727,6 +735,12 @@ public class OptionsPane extends JPanel implements ChangeListener
 				langDelphi.setSelected(true);
 
 				break;
+				
+			case CSHARP:
+
+				langCSharp.setSelected(true);
+
+				break;
 
 		}	
 
@@ -859,7 +873,10 @@ public class OptionsPane extends JPanel implements ChangeListener
 		else if (langDelphi.isSelected())
 
 			result.language = DELPHI;
+		
+		else if (langCSharp.isSelected())
 
+			result.language = CSHARP;
 			
 
 		if (parserRD.isSelected())

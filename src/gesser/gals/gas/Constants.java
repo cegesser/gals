@@ -1,4 +1,4 @@
-package gesser.gals.gas;
+﻿package gesser.gals.gas;
 
 public interface Constants
 {

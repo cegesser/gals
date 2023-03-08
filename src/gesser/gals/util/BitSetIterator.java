@@ -1,11 +1,11 @@
-package gesser.gals.util;
+ï»¿package gesser.gals.util;
 
 import java.util.Iterator;
 import java.util.BitSet;
 
 /**
- *  Iterador que avança sobre os elementos de um BitSet.
- * Cada chamada a next() retorna o índice do próximo "1" do BitSet.
+ *  Iterador que avanÃ§a sobre os elementos de um BitSet.
+ * Cada chamada a next() retorna o Ã­ndice do prÃ³ximo "1" do BitSet.
  *
  * @author Carlos Eduardo Gesser
  */

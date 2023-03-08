@@ -1,4 +1,4 @@
-package gesser.gals;
+Ôªøpackage gesser.gals;
 
 import java.io.File;
 
@@ -31,7 +31,7 @@ public class FileFilters extends FileFilter
 		return description;
 	}
 	
-	public static final FileFilters GALS_FILTER = new FileFilters("gals", "EspecificaÁ„o Sint·tica (*.gals)");
+	public static final FileFilters GALS_FILTER = new FileFilters("gals", "Especifica√ß√£o Sint√°tica (*.gals)");
 	public static final FileFilters BNF_FILTER = new FileFilters("bnf", "Arquivo GAS (*.bnf)");
 	public static final FileFilters DIRECTORY_FILTER = new FileFilters("", "Pastas")
 	{

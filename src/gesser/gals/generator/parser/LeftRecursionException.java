@@ -1,7 +1,7 @@
-package gesser.gals.generator.parser;
+Ôªøpackage gesser.gals.generator.parser;
 
 /**
- * Excess„o para indicar que a gram·tica possui recurs„o a esquerda
+ * Excess√£o para indicar que a gram√°tica possui recurs√£o a esquerda
  *
  * @author Carlos Eduardo Gesser
  */

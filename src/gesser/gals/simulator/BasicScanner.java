@@ -1,4 +1,4 @@
-package gesser.gals.simulator;
+﻿package gesser.gals.simulator;
 
 import gesser.gals.analyser.LexicalError;
 import gesser.gals.analyser.Token;

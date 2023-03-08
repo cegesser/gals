@@ -1,4 +1,4 @@
-package gesser.gals.util;
+﻿package gesser.gals.util;
 
 public class XMLParsingException extends Exception
 {

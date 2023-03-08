@@ -1,4 +1,4 @@
-package gesser.gals.scannerparser;
+﻿package gesser.gals.scannerparser;
 
 import gesser.gals.analyser.Token;
 

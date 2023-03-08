@@ -1,4 +1,4 @@
-package gesser.gals.simulator;
+Ôªøpackage gesser.gals.simulator;
 
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -45,6 +45,6 @@ public class SimpleScanner
 		}
 		pos++;			
 		
-		throw new LexicalError("SÌmbolo Inv·lido", pos);
+		throw new LexicalError("S√≠mbolo Inv√°lido", pos);
 	}
 }

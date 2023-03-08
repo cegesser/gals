@@ -1,4 +1,4 @@
-package gesser.gals.analyser;
+﻿package gesser.gals.analyser;
 
 public class Token
 {

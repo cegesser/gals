@@ -48,7 +48,7 @@ public class CSharpCommonGenerator
 
 				
 
-		result.put("Token.java", generateToken(options));
+		result.put("Token.cs", generateToken(options));
 
 
 
@@ -86,91 +86,34 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
+		String cls = "    public class Token\n"
+				+ "    {\n"
+				+ "        public int Id { get; private set; }\n"
+				+ "        public string Lexeme { get; private set; }\n"
+				+ "        public int Position { get; private set; }\n"
+				+ "\n"
+				+ "        public Token(int id, string lexeme, int position)\n"
+				+ "        {\n"
+				+ "            Id = id;\n"
+				+ "            Lexeme = lexeme;\n"
+				+ "            Position = position;\n"
+				+ "        }\n"
+				+ "\n"
+				+ "        public override string ToString() => $\"{Id} ( {Lexeme} ) @ {Position}\";\n"
+				+ "\n"
+				+ "    }";
+
 
 		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
-
-		String cls = 
-
-		"public class Token\n"+
-
-		"{\n"+
-
-		"    private int id;\n"+
-
-		"    private String lexeme;\n"+
-
-		"    private int position;\n"+
-
-		"\n"+
-
-		"    public Token(int id, String lexeme, int position)\n"+
-
-		"    {\n"+
-
-		"        this.id = id;\n"+
-
-		"        this.lexeme = lexeme;\n"+
-
-		"        this.position = position;\n"+
-
-		"    }\n"+
-
-		"\n"+	
-
-		"    public final int getId()\n"+
-
-		"    {\n"+
-
-		"        return id;\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public final String getLexeme()\n"+
-
-		"    {\n"+
-
-		"        return lexeme;\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public final int getPosition()\n"+
-
-		"    {\n"+
-
-		"        return position;\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public String toString()\n"+
-
-		"    {\n"+
-
-		"        return id+\" ( \"+lexeme+\" ) @ \"+position;\n"+
-
-		"    };\n"+
-
-		"}\n"+
-
-		"";
-
+		boolean usePackage = package_ != null && !package_.equals("");
 		
+		if (usePackage)
+			result.append("namespace " + package_ + "\n{\n");
 
 		result.append(cls);  
 
-		
+		if (usePackage)
+			result.append("\n}");
 
 		return result.toString();
 

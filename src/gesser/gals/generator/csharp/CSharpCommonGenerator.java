@@ -52,15 +52,15 @@ public class CSharpCommonGenerator
 
 
 
-		result.put("Constants.java", generateConstants(fa, g, options));
+		result.put("Constants.cs", generateConstants(fa, g, options));
 
 		if (fa != null)
 
-			result.put("ScannerConstants.java", generateScannerConstants(fa, options));
+			result.put("ScannerConstants.cs", generateScannerConstants(fa, options));
 
 		if (g != null)
 
-			result.put("ParserConstants.java", generateParserConstants(g, options));	
+			result.put("ParserConstants.cs", generateParserConstants(g, options));	
 
 		
 
@@ -103,18 +103,10 @@ public class CSharpCommonGenerator
 				+ "\n"
 				+ "    }";
 
-
-		String package_ = options.pkgName;
-		boolean usePackage = package_ != null && !package_.equals("");
-		
-		if (usePackage)
-			result.append("namespace " + package_ + "\n{\n");
-
 		result.append(cls);  
 
-		if (usePackage)
-			result.append("\n}");
-
+    	colocarNamespace(result, options);
+    	
 		return result.toString();
 
 	}
@@ -379,41 +371,15 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-		
-
-		String extInter = null;
-
-		if (fa == null)
-
-			extInter = "ParserConstants";
-
-		else if (g == null)
-
-			extInter = "ScannerConstants";
-
-		else
-
-			extInter = "ScannerConstants, ParserConstants";
-
-		
-
 		result.append(
 
-		"public interface Constants extends "+extInter+"\n"+
+		"    public static class Constants\n"+
 
-		"{\n"+
+		"    {\n"+
 
-		"    int EPSILON  = 0;\n"+
+		"        public const int EPSILON  = 0;\n"+
 
-		"    int DOLLAR   = 1;\n"+
+		"        public const int DOLLAR   = 1;\n"+
 
 		"\n"+
 
@@ -421,17 +387,23 @@ public class CSharpCommonGenerator
 
 		"\n" );
 
-		    	
-
-    	result.append("}\n");
-
-				
+    	result.append("    }");
+    	
+    	colocarNamespace(result, options);
 
 		return result.toString();
 
 	}
 
-
+	private void colocarNamespace(StringBuffer result, Options options) {
+		String package_ = options.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		if (usePackage) {
+			result.insert(0, "namespace " + package_ + "\n{\n");
+			result.append("\n}");
+		}
+	}
 
 	private String generateScannerConstants(FiniteAutomata fa, Options options)
 
@@ -441,19 +413,11 @@ public class CSharpCommonGenerator
 
 		
 
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-		
-
 		result.append(
 
-		"public interface ScannerConstants\n"+
+		"    public static class ScannerConstants\n"+
 
-		"{\n");
+		"    {\n");
 
 		
 
@@ -461,9 +425,9 @@ public class CSharpCommonGenerator
 
 			
 
-		result.append("}\n");
+		result.append("    }\n");
 
-				
+		colocarNamespace(result, options);
 
 		return result.toString();
 
@@ -477,21 +441,12 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-		
 
 		result.append(
 
-		"public interface ParserConstants\n"+
+		"    public static class ParserConstants\n"+
 
-		"{\n");
+		"    {\n");
 
 		
 
@@ -499,9 +454,10 @@ public class CSharpCommonGenerator
 
 			
 
-		result.append("}\n");
+		result.append("    }\n");
 
-				
+
+		colocarNamespace(result, options);
 
 		return result.toString();
 
@@ -589,9 +545,9 @@ public class CSharpCommonGenerator
 
 		
 
-		result.append("    int[][] SCANNER_CONTEXT =\n"+
+		result.append("        public static readonly int[][] SCANNER_CONTEXT =\n"+
 
-		              "    {\n");
+		              "        {\n");
 
 		
 
@@ -599,7 +555,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			result.append("        {");
+			result.append("            new[] {");
 
 			result.append(fa.isContext(i)?"1":"0");
 
@@ -617,7 +573,7 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"\n    };\n");
+		"\n        };\n");
 
 		
 
@@ -637,9 +593,9 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"    String[] SCANNER_ERROR =\n"+
+		"        public static readonly string[] SCANNER_ERROR =\n"+
 
-		"    {\n");
+		"        {\n");
 
 
 
@@ -649,7 +605,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			result.append("        \"");
+			result.append("            \"");
 
 			
 
@@ -679,7 +635,7 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"\n    };\n");
+		"\n        };\n");
 
 
 
@@ -731,21 +687,21 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer(
 
-			"    int FIRST_SEMANTIC_ACTION = "+g.FIRST_SEMANTIC_ACTION()+";\n"+
+			"        public const int FIRST_SEMANTIC_ACTION = "+g.FIRST_SEMANTIC_ACTION()+";\n"+
 
 			"\n"+
 
-			"    int SHIFT  = 0;\n"+
+			"        public const int SHIFT  = 0;\n"+
 
-			"    int REDUCE = 1;\n"+
+			"        public const int REDUCE = 1;\n"+
 
-			"    int ACTION = 2;\n"+
+			"        public const int ACTION = 2;\n"+
 
-			"    int ACCEPT = 3;\n"+
+			"        public const int ACCEPT = 3;\n"+
 
-			"    int GO_TO  = 4;\n"+
+			"        public const int GO_TO  = 4;\n"+
 
-			"    int ERROR  = 5;\n" );
+			"        public const int ERROR  = 5;\n" );
 
 		
 
@@ -789,9 +745,9 @@ public class CSharpCommonGenerator
 
 		
 
-		result.append("    int[][] PRODUCTIONS =\n");
+		result.append("        public static readonly int[][] PRODUCTIONS =\n");
 
-		result.append("    {\n");
+		result.append("        {\n");
 
 		
 
@@ -799,7 +755,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			result.append("        { ");
+			result.append("            new[] { ");
 
 			result.append(prods.get(i).get_lhs());
 
@@ -813,7 +769,7 @@ public class CSharpCommonGenerator
 
 		result.setLength(result.length()-2);
 
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 
 		
 
@@ -835,9 +791,9 @@ public class CSharpCommonGenerator
 
 		
 
-		result.append("    int[][][] PARSER_TABLE =\n");
+		result.append("        public static readonly int[][][] PARSER_TABLE =\n");
 
-		result.append("    {\n");
+		result.append("        {\n");
 
 		
 
@@ -851,19 +807,20 @@ public class CSharpCommonGenerator
 
 		max = (""+max).length();
 
-		
-
 		for (int i=0; i< tbl.length; i++)
 
 		{
 
-			result.append("        {");
+			result.append("            new[]\n"+
+			              "            {");
 
 			for (int j=0; j<tbl[i].length; j++)
 
 			{
-
-				result.append(" {");
+				if(j%5 == 0)
+					result.append("\n               ");
+				
+				result.append(" new[] { ");
 
 				result.append(Command.CONSTANTS[tbl[i][j][0]]);
 
@@ -881,13 +838,13 @@ public class CSharpCommonGenerator
 
 			result.setLength(result.length()-1);
 
-			result.append(" },\n");
+			result.append("\n            },\n");
 
 		}	
 
 		result.setLength(result.length()-2);
 
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 
 		
 
@@ -901,6 +858,8 @@ public class CSharpCommonGenerator
 
 	{
 
+		
+		
 		StringBuffer result = new StringBuffer();
 
 		
@@ -919,13 +878,13 @@ public class CSharpCommonGenerator
 
 			String syntConsts = 
 
-			"    int START_SYMBOL = "+start+";\n"+
+			"        public const int START_SYMBOL = "+start+";\n"+
 
 			"\n"+
 
-			"    int FIRST_NON_TERMINAL    = "+fnt+";\n"+
+			"        public const int FIRST_NON_TERMINAL    = "+fnt+";\n"+
 
-	    	"    int FIRST_SEMANTIC_ACTION = "+fsa+";\n";
+	    	"        public const int FIRST_SEMANTIC_ACTION = "+fsa+";\n";
 
 	    	
 
@@ -1007,11 +966,11 @@ public class CSharpCommonGenerator
 
 			if (t.charAt(0) == '\"')
 
-				result.append("    int t_TOKEN_"+(i+2)+" = "+(i+2)+"; "+"//"+t+"\n");
+				result.append("        public const int t_TOKEN_"+(i+2)+" = "+(i+2)+"; "+"//"+t+"\n");
 
 			else
 
-				result.append("    int t_"+t+" = "+(i+2)+";\n");
+				result.append("        public const int t_"+t+" = "+(i+2)+";\n");
 
 		}
 
@@ -1087,17 +1046,15 @@ public class CSharpCommonGenerator
 
 		
 
-		result.append("    int[] SCANNER_TABLE_INDEXES = \n");
+		result.append("        public static readonly int[] SCANNER_TABLE_INDEXES = \n");
 
-		result.append("    {\n");
-
-		
+		result.append("        {");
 
 		for (int i=0; i<sti.length; i++)
-
 		{
-
-			result.append("        ").append(sti[i]).append(",\n");
+			if(i%32 == 0)
+				result.append("\n            ");
+			result.append(sti[i]).append(", ");
 
 		}		
 
@@ -1105,29 +1062,30 @@ public class CSharpCommonGenerator
 
 		result.setLength(result.length()-2);
 
-		result.append("\n    };\n\n");	
+		result.append("\n        };\n\n");	
 
 		
 
-		result.append("    int[][] SCANNER_TABLE = \n");
+		result.append("        public static readonly int[][] SCANNER_TABLE = \n");
 
-		result.append("    {\n");
-
-
+		result.append("        {");
 
 		for (int i=0; i<st.length; i++)
-
 		{
-
-			result.append("        {").append(st[i][0]).append(", ").append(st[i][1]).append("},\n");
-
+			if(i%6 == 0)
+				result.append("\n            ");
+			result.append("new[] {")
+			      .append(st[i][0])
+			      .append(", ")
+			      .append(st[i][1])
+			      .append("}, ");
 		}		
 
 
 
 		result.setLength(result.length()-2);
 
-		result.append("\n    };\n");	
+		result.append("\n        };\n");	
 
 		
 
@@ -1138,63 +1096,44 @@ public class CSharpCommonGenerator
 	
 
 	private String lex_table(FiniteAutomata fa)
-
 	{
-
 		StringBuffer result = new StringBuffer();
 
-		
-
-		result.append("    int[][] SCANNER_TABLE = \n");
-
-		result.append("    {\n");
-
-		
+		result.append("        public static readonly int[][] SCANNER_TABLE =\n");
+		result.append("        {\n");
 
 		int count = fa.getTransitions().size();
-
 		int max = String.valueOf(count).length();
 
 		if (max == 1)
-
 			max = 2;
 
-			
-
+		int indent = 0;	
+		
 		for (int i=0; i<count; i++)
-
 		{
-
-			result.append("        { ");
-
+			result.append("            new[]\n");
+			result.append("            {\n");
+			result.append("                ");
 			for (char c = 0; c<256; c++)
-
 			{
-
 				String n = String.valueOf(fa.nextState(c, i));
-
 				for (int j = n.length(); j<max; j++)
-
 					result.append(" ");
-
 				result.append(n).append(", ");
-
+				if(++indent%16 == 0 && c<255)
+					result.append("\n                ");
 			}
-
 			result.setLength(result.length()-2);
-
-			result.append(" },\n");
-
+			result.append("\n			},\n");
 		}
 
 		result.setLength(result.length()-2);
 
 		
-
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 
 		
-
 		return result.toString();
 
 	}
@@ -1209,7 +1148,9 @@ public class CSharpCommonGenerator
 
 		
 
-		result.append("    int[] TOKEN_STATE = {");
+		result.append("        public static readonly int[] TOKEN_STATE =\n");
+		result.append("        {\n");
+		result.append("            ");
 
 		int count = fa.getTransitions().size();
 
@@ -1239,7 +1180,7 @@ public class CSharpCommonGenerator
 
 		result.setLength(result.length()-2);		
 
-		result.append(" };\n");
+		result.append("\n        };\n");
 
 		
 
@@ -1269,9 +1210,10 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-			"    int[] SPECIAL_CASES_INDEXES =\n"+
+			"        public static readonly int[] SPECIAL_CASES_INDEXES =\n"+
 
-			"        { ");
+			"        {\n"+
+			"            ");
 
 		
 
@@ -1287,15 +1229,15 @@ public class CSharpCommonGenerator
 
 		result.append(indexes[count-1][1]);
 
-		result.append(" };\n\n");
+		result.append("\n        };\n\n");
 
 				
 
 		result.append(
 
-					"    String[] SPECIAL_CASES_KEYS =\n"+
-
-					"        {  ");
+					"        public static readonly string[] SPECIAL_CASES_KEYS =\n"+
+					"        {\n"+
+					"            ");
 
 		count = sc.length;
 
@@ -1311,15 +1253,15 @@ public class CSharpCommonGenerator
 
 				
 
-		result.append(" };\n\n");
+		result.append("\n        };\n\n");
 
 		
 
 		result.append(
 
-					"    int[] SPECIAL_CASES_VALUES =\n"+
-
-					"        {  ");
+					"        public static readonly int[] SPECIAL_CASES_VALUES =\n"+
+					"        {\n"+
+					"            ");
 
 		count = sc.length;
 
@@ -1335,7 +1277,7 @@ public class CSharpCommonGenerator
 
 				
 
-		result.append(" };\n");
+		result.append("\n        };\n");
 
 		
 
@@ -1401,9 +1343,9 @@ public class CSharpCommonGenerator
 
 		
 
-		bfr.append("    int[][] PRODUCTIONS = \n");
+		bfr.append("        public static readonly int[][] PRODUCTIONS = \n");
 
-		bfr.append("    {\n");
+		bfr.append("        {\n");
 
 		
 
@@ -1411,7 +1353,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			bfr.append("        {");
+			bfr.append("            new[] {");
 
 			for (int j=0; j<productions[i].length; j++)
 
@@ -1435,7 +1377,7 @@ public class CSharpCommonGenerator
 
 		bfr.setLength(bfr.length()-2);
 
-		bfr.append("\n    };\n");
+		bfr.append("\n        };\n");
 
 		
 
@@ -1483,9 +1425,9 @@ public class CSharpCommonGenerator
 
 		
 
-		bfr.append("    int[][] PARSER_TABLE =\n");
+		bfr.append("        public static readonly int[][] PARSER_TABLE =\n");
 
-		bfr.append("    {\n");
+		bfr.append("        {\n");
 
 		
 
@@ -1493,7 +1435,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			bfr.append("        {");
+			bfr.append("            new[] {");
 
 			for (int j=0; j<table[i].length; j++)
 
@@ -1511,13 +1453,13 @@ public class CSharpCommonGenerator
 
 			bfr.setLength(bfr.length()-1);
 
-	 		bfr.append(" },\n");
+	 		bfr.append("\n            },\n");
 
 		}	
 
 		bfr.setLength(bfr.length()-2);
 
-		bfr.append("\n    };\n");
+		bfr.append("\n        };\n");
 
 		
 
@@ -1541,9 +1483,9 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"    String[] PARSER_ERROR =\n"+
+		"        public static readonly string[] PARSER_ERROR =\n"+
 
-		"    {\n");
+		"        {\n");
 
 		
 
@@ -1551,7 +1493,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			result.append("        \"Erro estado "+i+"\",\n");
+			result.append("            \"Erro estado "+i+"\",\n");
 
 		}
 
@@ -1561,7 +1503,7 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"\n    };\n");
+		"\n        };\n");
 
 	
 
@@ -1583,13 +1525,13 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"    String[] PARSER_ERROR =\n"+
+		"        public static readonly string[] PARSER_ERROR =\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        \"\",\n"+
+		"            \"\",\n"+
 
-		"        \"Era esperado fim de programa\",\n");
+		"            \"Era esperado fim de programa\",\n");
 
 		
 
@@ -1597,7 +1539,7 @@ public class CSharpCommonGenerator
 
 		{
 
-			result.append("        \"Era esperado ");
+			result.append("            \"Era esperado ");
 
 			for (int j=0; j<symbs[i].length(); j++)
 
@@ -1627,7 +1569,7 @@ public class CSharpCommonGenerator
 
 		for (int i=g.FIRST_NON_TERMINAL; i< symbs.length; i++)
 
-			result.append("        \""+symbs[i]+" inválido\",\n");
+			result.append("            \""+symbs[i]+" inválido\",\n");
 
 			
 
@@ -1635,7 +1577,7 @@ public class CSharpCommonGenerator
 
 		result.append(
 
-		"\n    };\n");
+		"\n        };\n");
 
 		
 

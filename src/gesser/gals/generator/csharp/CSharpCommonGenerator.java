@@ -64,13 +64,13 @@ public class CSharpCommonGenerator
 
 		
 
-		result.put("AnalysisError.java", generateAnalysisError(options));
+		result.put("AnalysisError.cs", generateAnalysisError(options));
 
-		result.put("LexicalError.java", generateLexicalError(options));
+		result.put("LexicalError.cs", generateLexicalError(options));
 
-		result.put("SyntaticError.java", generateSyntaticError(options));
+		result.put("SyntaticError.cs", generateSyntaticError(options));
 
-		result.put("SemanticError.java", generateSemanticError(options));	
+		result.put("SemanticError.cs", generateSemanticError(options));	
 
 		
 
@@ -119,77 +119,22 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
-
 		String cls = 
 
-		"public class AnalysisError extends Exception\n"+
-
-		"{\n"+	
-
-		"    private int position;\n"+
-
-		"\n"+
-
-		"    public AnalysisError(String msg, int position)\n"+
-
-		"    {\n"+
-
-		"        super(msg);\n"+
-
-		"        this.position = position;\n"+
-
-		"    }\n"+
-
-		"\n"+	
-
-		"    public AnalysisError(String msg)\n"+
-
-		"    {\n"+
-
-		"        super(msg);\n"+
-
-		"        this.position = -1;\n"+
-
-	    "    }\n"+
-
-		"\n"+
-
-		"    public int getPosition()\n"+
-
-		"    {\n"+
-
-		"        return position;\n"+
-
-	    "    }\n"+
-
-		"\n"+
-
-		"    public String toString()\n"+
-
-		"    {\n"+
-
-		"        return super.toString() + \", @ \"+position;\n"+
-
-		"    }\n"+
-
-		"}\n"+
-
-		"";
-
-		
+		"    public class AnalysisError : Exception\n"
+		+ "    {\n"
+		+ "        public int Position { get; private set; }\n"
+		+ "\n"
+		+ "        public AnalysisError(string msg, int position) : base(msg) => Position = position;\n"
+		+ "\n"
+		+ "        public AnalysisError(string msg) : base(msg) { }\n"
+		+ "\n"
+		+ "        public override string ToString() => $\"{base.ToString()}, @ {Position}\";\n"
+		+ "    }";
 
 		result.append(cls);
 
-		
+		colocarNamespace(result, options);
 
 		return result.toString();
 
@@ -203,49 +148,19 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
 
 		String cls = 
-
-		"public class LexicalError extends AnalysisError\n"+
-
-		"{\n"+
-
-		"    public LexicalError(String msg, int position)\n"+
-
-		"	 {\n"+
-
-		"        super(msg, position);\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public LexicalError(String msg)\n"+
-
-		"    {\n"+
-
-		"        super(msg);\n"+
-
-		"    }\n"+
-
-		"}\n"+
-
-		"";
+		"    public class LexicalError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public LexicalError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public LexicalError(string msg): base(msg) { }\n"
+		+ "    }";
 
 		
-
 		result.append(cls);
 
-		
+		colocarNamespace(result, options);
 
 		return result.toString();
 
@@ -258,50 +173,21 @@ public class CSharpCommonGenerator
 	{
 
 		StringBuffer result = new StringBuffer();
-
 		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
-
 		String cls = 
 
-		"public class SyntaticError extends AnalysisError\n"+
-
-		"{\n"+
-
-		"    public SyntaticError(String msg, int position)\n"+
-
-		"	 {\n"+
-
-		"        super(msg, position);\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public SyntaticError(String msg)\n"+
-
-		"    {\n"+
-
-		"        super(msg);\n"+
-
-		"    }\n"+
-
-		"}\n"+
-
-		"";
+		"    public class SyntaticError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public SyntaticError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public SyntaticError(string msg) : base(msg) { }\n"
+		+ "    }";
 
 		
 
 		result.append(cls);
 
-		
+		colocarNamespace(result, options);
 
 		return result.toString();
 
@@ -315,56 +201,24 @@ public class CSharpCommonGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
-
 		String cls = 
 
-		"public class SemanticError extends AnalysisError\n"+
-
-		"{\n"+
-
-		"    public SemanticError(String msg, int position)\n"+
-
-		"	 {\n"+
-
-		"        super(msg, position);\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public SemanticError(String msg)\n"+
-
-		"    {\n"+
-
-		"        super(msg);\n"+
-
-		"    }\n"+
-
-		"}\n"+
-
-		"";
-
-		
+		"    public class SemanticError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public SemanticError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public SemanticError(string msg) : base(msg) { }\n"
+		+ "    }";
 
 		result.append(cls);
 
-		
+		colocarNamespace(result, options);
 
 		return result.toString();
 
 	}
 
 	
-
 	private String generateConstants(FiniteAutomata fa, Grammar g, Options options) throws NotLLException
 
 	{

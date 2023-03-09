@@ -29,7 +29,7 @@ import static gesser.gals.generator.Options.Parser.*;
 /**
  * 
  * @author Gustavo
- *
+ * @see gesser.gals.generator.java.JavaParserGenerator
  */
 
 public class CSharpParserGenerator
@@ -113,7 +113,7 @@ public class CSharpParserGenerator
 
 		CSharpCommonGenerator.colocarNamespace(result, parserOptions);
 
-		result.insert(0, emitStaticImport(parserOptions, "Constants"));
+		result.insert(0, CSharpCommonGenerator.emitStaticImport(parserOptions, "Constants"));
 		
 		return result.toString();
 
@@ -154,24 +154,12 @@ public class CSharpParserGenerator
 		return result.toString();
 
 	}
-	
-
-	private String emitStaticImport(Options parserOptions, String path) {
-		String package_ = parserOptions.pkgName;
-		boolean usePackage = package_ != null && !package_.equals("");
-		
-		if(usePackage) {
-			return  "using static " + package_ + "."+ path +  ";\n";
-		}
-		
-		return  "using static " + path + ";\n";
-	}
 
 	private String emitImports(Options parserOptions)
 	{
 		return  "using System.Collections;\n"+
-				emitStaticImport(parserOptions, "Constants")+
-		        emitStaticImport(parserOptions, "ParserConstants")+
+				CSharpCommonGenerator.emitStaticImport(parserOptions, "Constants")+
+				CSharpCommonGenerator.emitStaticImport(parserOptions, "ParserConstants")+
 				"\n";
 
 	}
@@ -901,21 +889,8 @@ public class CSharpParserGenerator
 		result.append(cls);
 
 		CSharpCommonGenerator.colocarNamespace(result, options);
-
 		
-		
-		String package_ = options.pkgName;
-		boolean usePackage = package_ != null && !package_.equals("");
-		
-		String usings;
-		if(usePackage) {
-			usings = "using static " + package_ + ".Constants;\n\n";
-		}else {
-			usings = "using static Constants;\n\n";
-		}
-		result.insert(0, usings);
-		
-		
+		result.insert(0, CSharpCommonGenerator.emitStaticImport(options, "Constants"));
 		
 		return result.toString();
 

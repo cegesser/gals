@@ -33,7 +33,7 @@ import static gesser.gals.generator.Options.ScannerTable.*;
 /**
  * 
  * @author Gustavo
- *
+ * @see gesser.gals.generator.java.JavaCommonGenerator
  */
 
 public class CSharpCommonGenerator
@@ -261,6 +261,17 @@ public class CSharpCommonGenerator
 			result.insert(0, "namespace " + package_ + "\n{\n");
 			result.append("\n}");
 		}
+	}
+	
+	public static String emitStaticImport(Options parserOptions, String path) {
+		String package_ = parserOptions.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		if(usePackage) {
+			return  "using static " + package_ + "."+ path +  ";\n";
+		}
+		
+		return  "using static " + path + ";\n";
 	}
 
 	private String generateScannerConstants(FiniteAutomata fa, Options options)

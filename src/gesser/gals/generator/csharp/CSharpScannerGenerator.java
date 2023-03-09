@@ -23,7 +23,7 @@ import static gesser.gals.generator.Options.ScannerTable.*;
 /**
  * 
  * @author Gustavo
- *
+ * @see gesser.gals.generator.java.JavaScannerGenerator
  */
 
 public class CSharpScannerGenerator
@@ -67,8 +67,22 @@ public class CSharpScannerGenerator
 			scanner = buildEmptyScanner(options);
 
 		
-
-		result.put(classname+".java", scanner);
+		StringBuffer scannerBuffer = new StringBuffer();
+		
+		scannerBuffer.append(scanner);
+		
+		CSharpCommonGenerator.colocarNamespace(scannerBuffer, options);
+		
+		scannerBuffer.insert(0, "\n");
+		
+		scannerBuffer.insert(0, CSharpCommonGenerator.emitStaticImport(options, "ScannerConstants"));
+		scannerBuffer.insert(0, CSharpCommonGenerator.emitStaticImport(options, "ParserConstants"));
+		scannerBuffer.insert(0, CSharpCommonGenerator.emitStaticImport(options, "Constants"));
+		scannerBuffer.insert(0, "using System.IO;\n");
+		scannerBuffer.insert(0, "using System;\n");
+		
+		
+		result.put(classname+".cs", scannerBuffer.toString());
 
 		
 
@@ -76,197 +90,145 @@ public class CSharpScannerGenerator
 
 	}
 
-
-
 	private String buildEmptyScanner(Options options)
 
 	{
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		
-
-		result.append(emitPackage(package_));
-
-		
-
 		String cls = 
 
-		"public class "+options.scannerName+" implements Constants\n"+
-
-		"{\n"+
-
-		"    public Token nextToken() throws LexicalError\n"+
+		"    public class " + options.scannerName + "\n"+
 
 		"    {\n"+
 
-		"        return null;\n"+
+		"        public Token NextToken()\n"+
+
+		"        {\n"+
+
+		"            return null;\n"+
+
+		"        }\n"+
 
 		"    }\n"+
 
-		"}\n"+
-
 		"";
-
-		
 
 		result.append(cls);
 
+		CSharpCommonGenerator.colocarNamespace(result, options);
 		
+		result.insert(0, CSharpCommonGenerator.emitStaticImport(options, "Constants"));
 
 		return result.toString();
 
 	}
 
-
-
 	private String buildScanner(FiniteAutomata fa, Options options)
-
+	
 	{
-
-		String inType;
-
-		String inInit;
-
-		String inDef;
-
-		if(options.input == STREAM)
-
-		{
-
-			inType = "java.io.Reader";
-
-			inInit = 
-
-			        "StringBuffer bfr = new StringBuffer();\n"+
-
-			"        try\n"+
-
-			"        {\n"+
-
-			"            int c = input.read();\n"+			
-
-			"            while (c != -1)\n"+
-
-			"            {\n"+
-
-			"                bfr.append((char)c);\n"+
-
-			"                c = input.read();\n"+
-
-			"            }\n"+
-
-			"            this.input = bfr.toString();\n"+
-
-			"        }\n"+
-
-			"        catch (java.io.IOException e)\n"+
-
-			"        {\n"+
-
-			"            e.printStackTrace();\n"+
-
-			"        }\n"+
-
-			"";
-
-			inDef = "this(new java.io.StringReader(\"\"));";
-
-		}
-
-		else if(options.input == STRING)
-
-		{
-
-			inType = "String";
-
-			inInit = "this.input = input;";
-
-			inDef = "this(\"\");";
-
-		}
-
-		else
-
-		{
-
-			//nunca acontece
-
-			inType = "";
-
-			inInit = "";
-
-			inDef  = "";
-
-		}
-
 		
-
-		String package_ = options.pkgName;
-
-		
-
 		String cls = 
 
-		emitPackage(package_)+
+		"    public class "+options.scannerName+"\n"+
 
-		"public class "+options.scannerName+" implements Constants\n"+
-
-		"{\n"+
-
-		"    private int position;\n"+
-
-		"    private String input;\n"+
-
+		"    {\n";
+		if (options.input == STRING)
+		{
+			cls +=    "        public int Position { private get; set; }\n"
+					+ "        \n"
+					+ "        private string _input;\n"
+					+ "        public string Input \n"
+					+ "        {\n"
+					+ "            get => _input;\n"
+					+ "            set \n"
+					+ "            { \n"
+					+ "                _input = value; \n"
+					+ "                Position = 0;\n"
+					+ "            }\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        public " + options.scannerName + "() : this(\"\") { }\n"
+					+ "\n"
+					+ "        public " + options.scannerName + "(string input) => Input = input;\n"
+					+ "\n"
+					+ "        private string Substring(int start, int end)\n"
+					+ "        {\n"
+					+ "            return Input.Substring(start, end - start);\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        private char NextChar()\n"
+					+ "        {\n"
+					+ "            if (HasInput())\n"
+					+ "                return Input[Position++];\n"
+					+ "            else\n"
+					+ "                return char.MaxValue; \n"
+					+ "        }\n"
+					+ "\n";			
+		}
+		else
+		{
+			cls +=    "        public int Position \n"
+					+ "        { \n"
+					+ "            private get => (int) _input.Position;\n"
+					+ "            set => _input.Position = value;\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        private StreamReader _streamReader;\n"
+					+ "\n"
+					+ "        private Stream _input;\n"
+					+ "        public Stream Input\n"
+					+ "        {\n"
+					+ "            get => _input;\n"
+					+ "            set\n"
+					+ "            {\n"
+					+ "                _streamReader?.Dispose();\n"
+					+ "\n"
+					+ "                _streamReader = null;\n"
+					+ "                _input = value;\n"
+					+ "                if (_input != null)\n"
+					+ "                {\n"
+					+ "                    _input.Position = 0;\n"
+					+ "                    _streamReader = new StreamReader(_input);\n"
+					+ "                }\n"
+					+ "            }\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        public " + options.scannerName + "() : this(null) { }\n"
+					+ "\n"
+					+ "        public " + options.scannerName + "(Stream input) => Input = input;\n"
+					+ "\n"
+					+ "        private string Substring(int start, int end)\n"
+					+ "        {\n"
+					+ "            var len = end - start;\n"
+					+ "            char[] buffer = new char[len];\n"
+					+ "            var pos = Position;\n"
+					+ "            Position = start;\n"
+					+ "            var readed = _streamReader.Read(buffer, 0, len);\n"
+					+ "            Position = pos;\n"
+					+ "            if (readed != len) throw new IndexOutOfRangeException();\n"
+					+ "            return new string(buffer);\n"
+					+ "        }\n"
+					+ "        \n"
+					+ "        private char NextChar()\n"
+					+ "        {\n"
+					+ "            char[] buffer = new char[1];\n"
+					+ "            if (_streamReader.Read(buffer, 0, 1) > 0)\n"
+					+ "            {\n"
+					+ "                return buffer[0];\n"
+					+ "            }\n"
+					+ "            else\n"
+					+ "            {\n"
+					+ "                return char.MaxValue;\n"
+					+ "            }\n"
+					+ "        }\n"
+					+ "\n";
+		}
+		cls +=
+	
 		"\n"+
 
-		"    public "+options.scannerName+"()\n"+
-
-		"    {\n"+
-
-		"        "+inDef+"\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public "+options.scannerName+"("+inType+" input)\n"+
-
-		"    {\n"+
-
-		"        setInput(input);\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public void setInput("+inType+" input)\n"+
-
-		"    {\n"+
-
-		"        "+inInit+"\n"+
-
-		"        setPosition(0);\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    public void setPosition(int pos)\n"+
-
-		"    {\n"+
-
-		"        position = pos;\n"+	
-
-		"    }\n\n"+
-
-		
-
-		mainDriver(fa)+
+		mainDriver(fa, options)+
 
 		"\n"+
 
@@ -274,7 +236,7 @@ public class CSharpScannerGenerator
 
 		
 
-		"}\n"+
+		"    }\n"+
 
 		"";
 
@@ -284,148 +246,128 @@ public class CSharpScannerGenerator
 
 	}
 
-	
-
-	private String emitPackage(String package_)
-
-	{
-
-		if (package_ != null && !package_.equals(""))
-
-			return "package " + package_ + ";\n\n";
-
-		else
-
-			return "";
-
-	}
-
-	
-
-	private String mainDriver(FiniteAutomata fa)
+	private String mainDriver(FiniteAutomata fa, Options options)
 
 	{
 
 		return 
 
-		"    public Token nextToken() throws LexicalError\n"+
-
-		"    {\n"+
-
-		"        if ( ! hasInput() )\n"+
-
-		"            return null;\n"+
-
-		"\n"+		
-
-		"        int start = position;\n"+
-
-		"\n"+		
-
-		"        int state = 0;\n"+
-
-		"        int lastState = 0;\n"+
-
-		"        int endState = -1;\n"+
-
-		"        int end = -1;\n"+
-
-		(fa.hasContext() ?
-
-		"        int ctxtState = -1;\n"+
-
-		"        int ctxtEnd = -1;\n" : "")+
-
-		"\n"+
-
-		"        while (hasInput())\n"+
+		"        public Token NextToken()\n"+
 
 		"        {\n"+
 
-		"            lastState = state;\n"+
+		"            if ( ! HasInput() )\n"+
 
-		"            state = nextState(nextChar(), state);\n"+
+		"                return null;\n"+
+
+		"\n"+		
+
+		"            int start = Position;\n"+
+
+		"\n"+		
+
+		"            int state = 0;\n"+
+
+		"            int lastState = 0;\n"+
+
+		"            int endState = -1;\n"+
+
+		"            int end = -1;\n"+
+
+		(fa.hasContext() ?
+
+		"            int ctxtState = -1;\n"+
+
+		"            int ctxtEnd = -1;\n" : "")+
 
 		"\n"+
 
-		"            if (state < 0)\n"+
+		"            while (HasInput())\n"+
 
-		"                break;\n"+
+		"            {\n"+
+
+		"                lastState = state;\n"+
+
+		"                state = NextState(NextChar(), state);\n"+
 
 		"\n"+
+
+		"                if (state < 0)\n"+
+
+		"                    break;\n"+
+
+		"\n"+
+
+		"                else\n"+
+
+		"                {\n"+
+
+		"                    if (TokenForState(state) >= 0)\n"+
+
+		"                    {\n"+
+
+		"                        endState = state;\n"+
+
+		"                        end = Position;\n"+
+
+		"                    }\n"+
+
+		(fa.hasContext() ? 
+
+		"                    if (SCANNER_CONTEXT[state][0] == 1)\n" +
+		"                    {\n" +
+		"                        ctxtState = state;\n" +
+		"                        ctxtEnd = Position;\n" +
+		"                    }\n" : "")+
+
+		"                }\n"+
+
+		"            }\n"+
+
+		"            if (endState < 0 || (endState != state && TokenForState(lastState) == -2))\n"+
+
+		"                throw new LexicalError(SCANNER_ERROR[lastState], start);\n"+
+
+		"\n"+
+
+		(fa.hasContext() ? 
+
+		"            if (ctxtState != -1 && SCANNER_CONTEXT[endState][1] == ctxtState)\n"+
+		"                end = ctxtEnd;\n"+
+
+		"\n" : "" )+
+
+		"            Position = end;\n"+
+
+		"\n"+
+
+		"            int token = TokenForState(endState);\n"+
+
+		"\n"+
+
+		"            if (token == 0)\n"+
+
+		"                return NextToken();\n"+
 
 		"            else\n"+
 
 		"            {\n"+
 
-		"                if (tokenForState(state) >= 0)\n"+
+		"                string lexeme = Substring(start, end);\n"+
 
-		"                {\n"+
+		(lookup ?
 
-		"                    endState = state;\n"+
+		"                token = LookupToken(token, lexeme);\n" : "")+
 
-		"                    end = position;\n"+
-
-		"                }\n"+
-
-		(fa.hasContext() ? 
-
-		"                if (SCANNER_CONTEXT[state][0] == 1)\n" +
-		"                {\n" +
-		"                    ctxtState = state;\n" +
-		"                    ctxtEnd = position;\n" +
-		"                }\n" : "")+
+		"                return new Token(token, lexeme, start);\n"+
 
 		"            }\n"+
 
 		"        }\n"+
 
-		"        if (endState < 0 || (endState != state && tokenForState(lastState) == -2))\n"+
-
-		"            throw new LexicalError(SCANNER_ERROR[lastState], start);\n"+
-
-		"\n"+
-
-		(fa.hasContext() ? 
-
-		"        if (ctxtState != -1 && SCANNER_CONTEXT[endState][1] == ctxtState)\n"+
-		"            end = ctxtEnd;\n"+
-
-		"\n" : "" )+
-
-		"        position = end;\n"+
-
-		"\n"+
-
-		"        int token = tokenForState(endState);\n"+
-
-		"\n"+
-
-		"        if (token == 0)\n"+
-
-		"            return nextToken();\n"+
-
-		"        else\n"+
-
-		"        {\n"+
-
-		"            String lexeme = input.substring(start, end);\n"+
-
-		(lookup ?
-
-		"            token = lookupToken(token, lexeme);\n" : "")+
-
-		"            return new Token(token, lexeme, start);\n"+
-
-		"        }\n"+
-
-		"    }\n"+
-
 		"";
 
 	}
-
-	
 
 	private String auxFuncions(FiniteAutomata fa, Options options)
 
@@ -443,15 +385,15 @@ public class CSharpScannerGenerator
 
 				nextState =
 
-					"    private int nextState(char c, int state)\n"+
+					"        private int NextState(char c, int state)\n"+
 
-					"    {\n"+
+					"        {\n"+
 
-					"        int next = SCANNER_TABLE[state][c];\n"+
+					"            int next = SCANNER_TABLE[state][c];\n"+
 
-					"        return next;\n"+
+					"            return next;\n"+
 
-					"    }\n";
+					"        }\n";
 
 				break;
 
@@ -461,43 +403,43 @@ public class CSharpScannerGenerator
 
 					
 
-					"    private int nextState(char c, int state)\n"+
-
-					"    {\n"+
-
-					"        int start = SCANNER_TABLE_INDEXES[state];\n"+
-
-					"        int end   = SCANNER_TABLE_INDEXES[state+1]-1;\n"+
-
-					"\n"+
-
-					"        while (start <= end)\n"+
+					"        private int NextState(char c, int state)\n"+
 
 					"        {\n"+
 
-					"            int half = (start+end)/2;\n"+
+					"            int start = SCANNER_TABLE_INDEXES[state];\n"+
+
+					"            int end   = SCANNER_TABLE_INDEXES[state+1]-1;\n"+
 
 					"\n"+
 
-					"            if (SCANNER_TABLE[half][0] == c)\n"+
+					"            while (start <= end)\n"+
 
-					"                return SCANNER_TABLE[half][1];\n"+
+					"            {\n"+
 
-					"            else if (SCANNER_TABLE[half][0] < c)\n"+
-
-					"                start = half+1;\n"+
-
-					"            else  //(SCANNER_TABLE[half][0] > c)\n"+
-
-					"                end = half-1;\n"+
-
-					"        }\n"+
+					"                int half = (start+end)/2;\n"+
 
 					"\n"+
 
-					"        return -1;\n"+
+					"                if (SCANNER_TABLE[half][0] == c)\n"+
 
-					"    }\n";
+					"                    return SCANNER_TABLE[half][1];\n"+
+
+					"                else if (SCANNER_TABLE[half][0] < c)\n"+
+
+					"                    start = half+1;\n"+
+
+					"                else  //(SCANNER_TABLE[half][0] > c)\n"+
+
+					"                    end = half-1;\n"+
+
+					"            }\n"+
+
+					"\n"+
+
+					"            return -1;\n"+
+
+					"        }\n";
 
 				break;
 
@@ -559,7 +501,7 @@ public class CSharpScannerGenerator
 
 				nextState = 
 
-				"    private int nextState(char c, int state)\n"+
+				"    private int NextState(char c, int state)\n"+
 
 				"    {\n"+
 
@@ -595,97 +537,81 @@ public class CSharpScannerGenerator
 
 		"\n"+
 
-		"    private int tokenForState(int state)\n"+
+		"        private int TokenForState(int state)\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        if (state < 0 || state >= TOKEN_STATE.length)\n"+
+		"            if (state < 0 || state >= TOKEN_STATE.Length)\n"+
 
-		"            return -1;\n"+
+		"                return -1;\n"+
 
 		"\n"+
 
-		"        return TOKEN_STATE[state];\n"+
+		"            return TOKEN_STATE[state];\n"+
 
-		"    }\n"+
+		"        }\n"+
 
 		"\n"+
 
 		(lookup ?
 
-		"    public int lookupToken(int base, String key)\n"+
+		"        public int LookupToken(int base, string key)\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        int start = SPECIAL_CASES_INDEXES[base];\n"+
+		"            int start = SPECIAL_CASES_INDEXES[base];\n"+
 
-		"        int end   = SPECIAL_CASES_INDEXES[base+1]-1;\n"+
+		"            int end   = SPECIAL_CASES_INDEXES[base+1]-1;\n"+
 
 		"\n"+
 
 		(sensitive?"":
 
-		"        key = key.toUpperCase();\n"+
+		"            key = key.ToUpper();\n"+
 
 		"\n")+
 
-		"        while (start <= end)\n"+
+		"            while (start <= end)\n"+
 
-		"        {\n"+
+		"            {\n"+
 
-		"            int half = (start+end)/2;\n"+
+		"                int half = (start+end)/2;\n"+
 
-		"            int comp = SPECIAL_CASES_KEYS[half].compareTo(key);\n"+
-
-		"\n"+
-
-		"            if (comp == 0)\n"+
-
-		"                return SPECIAL_CASES_VALUES[half];\n"+
-
-		"            else if (comp < 0)\n"+
-
-		"                start = half+1;\n"+
-
-		"            else  //(comp > 0)\n"+
-
-		"                end = half-1;\n"+
-
-		"        }\n"+		
+		"                int comp = SPECIAL_CASES_KEYS[half].CompareTo(key);\n"+
 
 		"\n"+
 
-		"        return base;\n"+
+		"                if (comp == 0)\n"+
 
-		"    }\n"+
+		"                    return SPECIAL_CASES_VALUES[half];\n"+
+
+		"                else if (comp < 0)\n"+
+
+		"                    start = half+1;\n"+
+
+		"                else  //(comp > 0)\n"+
+
+		"                    end = half-1;\n"+
+
+		"            }\n"+		
+
+		"\n"+
+
+		"            return base;\n"+
+
+		"        }\n"+
 
 		"\n":"")+
 
-		"    private boolean hasInput()\n"+
+		"        private bool HasInput()\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        return position < input.length();\n"+
+		"            return Position < Input.Length;\n"+
 
-		"    }\n"+
+		"        }\n"+
 
-		"\n"+
-
-		"    private char nextChar()\n"+
-
-		"    {\n"+
-
-		"        if (hasInput())\n"+
-
-		"            return input.charAt(position++);\n"+
-
-		"        else\n"+
-
-		"            return (char) -1;\n"+
-
-		"    }\n"+
-
-		"";
+		"\n";
 
 	}
 

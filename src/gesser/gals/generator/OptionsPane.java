@@ -88,7 +88,7 @@ public class OptionsPane extends JPanel implements ChangeListener
 
 	private JRadioButton lexFull   = new JRadioButton("Tabela Completa");
 
-	private JRadioButton lexCompac = new JRadioButton("Tabela Compactada (Só p/ JAVA por enquanto)");
+	private JRadioButton lexCompac = new JRadioButton("Tabela Compactada (Só p/ JAVA e C#)");
 
 	private JRadioButton lexHard   = new JRadioButton("Específica (Código)");
 

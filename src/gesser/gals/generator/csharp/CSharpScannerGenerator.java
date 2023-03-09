@@ -20,15 +20,11 @@ import static gesser.gals.generator.Options.Input.*;
 
 import static gesser.gals.generator.Options.ScannerTable.*;
 
-
-
 /**
-
- * @author Gesser
-
+ * 
+ * @author Gustavo
+ *
  */
-
-
 
 public class CSharpScannerGenerator
 

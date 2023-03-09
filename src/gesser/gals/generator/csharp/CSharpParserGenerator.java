@@ -26,7 +26,11 @@ import java.util.Map;
 
 import static gesser.gals.generator.Options.Parser.*;
 
-
+/**
+ * 
+ * @author Gustavo
+ *
+ */
 
 public class CSharpParserGenerator
 
@@ -46,8 +50,6 @@ public class CSharpParserGenerator
 
 			String classname = options.parserName;
 
-			
-
 			String parser;
 
 			
@@ -57,7 +59,6 @@ public class CSharpParserGenerator
 			{
 
 				case RD:
-
 					parser = buildRecursiveDecendantParser(g, options);
 
 					break;
@@ -86,11 +87,11 @@ public class CSharpParserGenerator
 
 							
 
-			result.put(classname+".java", parser);
+			result.put(classname+".cs", parser);
 
 			
 
-			result.put(options.semanticName + ".java", generateSemanticAnalyser(options));
+			result.put(options.semanticName + ".cs", generateSemanticAnalyser(options));
 
 		}
 
@@ -108,20 +109,12 @@ public class CSharpParserGenerator
 
 		StringBuffer result = new StringBuffer();
 
-	
-
-		String package_ = parserOptions.pkgName;
-
-	
-
-		result.append(emitPackage(package_));
-
-	
-
 		result.append(emitRecursiveDecendantClass(g, parserOptions));
 
-	
+		CSharpCommonGenerator.colocarNamespace(result, parserOptions);
 
+		result.insert(0, emitStaticImport(parserOptions, "Constants"));
+		
 		return result.toString();
 
 	}
@@ -134,24 +127,12 @@ public class CSharpParserGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = parserOptions.pkgName;
-
-		
-
-		result.append(emitPackage(package_));
-
-		
-
-		result.append(emitImports());
-
-		
-
 		result.append(emitLLClass(g, parserOptions));
 
-		
+		CSharpCommonGenerator.colocarNamespace(result, parserOptions);
 
+		result.insert(0, emitImports(parserOptions));
+		
 		return result.toString();
 
 	}
@@ -164,55 +145,34 @@ public class CSharpParserGenerator
 
 		StringBuffer result = new StringBuffer();
 
-	
-
-		String package_ = parserOptions.pkgName;
-
-	
-
-		result.append(emitPackage(package_));
-
-	
-
-		result.append(emitImports());
-
-	
-
 		result.append(emitLRClass(g, parserOptions));
 
-	
+		CSharpCommonGenerator.colocarNamespace(result, parserOptions);
 
+		result.insert(0, emitImports(parserOptions));
+		
 		return result.toString();
 
 	}
+	
 
-
-
-	private String emitPackage(String package_)
-
-	{
-
-		if (package_ != null && !package_.equals(""))
-
-			return "package " + package_ + ";\n\n";
-
-		else
-
-			return "";
-
+	private String emitStaticImport(Options parserOptions, String path) {
+		String package_ = parserOptions.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		if(usePackage) {
+			return  "using static " + package_ + "."+ path +  ";\n";
+		}
+		
+		return  "using static " + path + ";\n";
 	}
 
-
-
-	private String emitImports()
-
+	private String emitImports(Options parserOptions)
 	{
-
-		return 
-
-			"import java.util.Stack;\n"+
-
-			"\n";
+		return  "using System.Collections;\n"+
+				emitStaticImport(parserOptions, "Constants")+
+		        emitStaticImport(parserOptions, "ParserConstants")+
+				"\n";
 
 	}
 
@@ -228,7 +188,7 @@ public class CSharpParserGenerator
 
 		String classname = parserOptions.parserName;
 
-		result.append("public class ").append(classname).append(" implements Constants\n{\n");
+		result.append("    public sealed class ").append(classname).append(" \n    {\n");
 
 	
 
@@ -240,15 +200,15 @@ public class CSharpParserGenerator
 
 		String variables = 
 
-		"    private Stack stack = new Stack();\n"+
+		"        private readonly Stack _stack = new Stack();\n"+
 
-		"    private Token currentToken;\n"+
+		"        private Token _currentToken;\n"+
 
-		"    private Token previousToken;\n"+
+		"        private Token _previousToken;\n"+
 
-		"    private "+scannerName+" scanner;\n"+
+		"        private "+scannerName+" _scanner;\n"+
 
-		"    private "+semanName+" semanticAnalyser;\n"+
+		"        private "+semanName+" _semanticAnalyser;\n"+
 
 		"\n";
 
@@ -262,129 +222,127 @@ public class CSharpParserGenerator
 
 		
 
-		"    public void parse("+scannerName+" scanner, "+semanName+" semanticAnalyser) throws LexicalError, SyntaticError, SemanticError\n"+
-
-		"    {\n"+
-
-		"        this.scanner = scanner;\n"+
-
-		"        this.semanticAnalyser = semanticAnalyser;\n"+
-
-		"\n"+
-
-		"        stack.clear();\n"+
-
-		"        stack.push(new Integer(0));\n"+
-
-		"\n"+
-
-		"        currentToken = scanner.nextToken();\n"+
-
-		"\n"+
-
-		"        while ( ! step() )\n"+
-
-		"            ;\n"+
-
-		"    }\n"+		
-
-		"\n"+
-
-		"    private boolean step() throws LexicalError, SyntaticError, SemanticError\n"+
-
-		"    {\n"+
-
-		"        if (currentToken == null)\n"+
-
-        "        {\n"+
-
-		"            int pos = 0;\n"+
-
-		"            if (previousToken != null)\n"+
-
-		"                pos = previousToken.getPosition()+previousToken.getLexeme().length();\n"+
-
-		"\n"+
-
-        "            currentToken = new Token(DOLLAR, \"$\", pos);\n"+
-
-        "        }\n"+
-
-        "\n"+
-
-        "        int token = currentToken.getId();\n"+
-
-		"        int state = ((Integer)stack.peek()).intValue();\n"+
-
-		"\n"+
-
-        "        int[] cmd = PARSER_TABLE[state][token-1];\n"+
-
-		"\n"+
-
-		"        switch (cmd[0])\n"+
+		"        public void Parse("+scannerName+" scanner, "+semanName+" semanticAnalyser)\n"+
 
 		"        {\n"+
 
-		"            case SHIFT:\n"+
+		"            _scanner = scanner;\n"+
 
-		"                stack.push(new Integer(cmd[1]));\n"+
-
-		"                previousToken = currentToken;\n"+
-
-		"                currentToken = scanner.nextToken();\n"+
-
-		"                return false;\n"+
+		"            _semanticAnalyser = semanticAnalyser;\n"+
 
 		"\n"+
 
-		"            case REDUCE:\n"+
+		"            _stack.Clear();\n"+
 
-		"                int[] prod = PRODUCTIONS[cmd[1]];\n"+
-
-		"\n"+
-
-		"                for (int i=0; i<prod[1]; i++)\n"+
-
-		"                    stack.pop();\n"+
+		"            _stack.Push(0);\n"+
 
 		"\n"+
 
-		"                int oldState = ((Integer)stack.peek()).intValue();\n"+
-
-		"                stack.push(new Integer(PARSER_TABLE[oldState][prod[0]-1][1]));\n"+
-
-		"                return false;\n"+
+		"            _currentToken = scanner.NextToken();\n"+
 
 		"\n"+
 
-		"            case ACTION:\n"+
+		"            while (!Step());\n"+
 
-		"                int action = FIRST_SEMANTIC_ACTION + cmd[1] - 1;\n"+
+		"        }\n"+		
+		
+		"\n"+
 
-		"                stack.push(new Integer(PARSER_TABLE[state][action][1]));\n"+
+		"        private bool Step()\n"+
 
-		"                semanticAnalyser.executeAction(cmd[1], previousToken);\n"+
+		"        {\n"+
 
-		"                return false;\n"+
+		"            if (_currentToken == null)\n"+
+
+        "            {\n"+
+
+		"                int pos = 0;\n"+
+
+		"                if (_previousToken != null)\n"+
+
+		"                    pos = _previousToken.Position + _previousToken.Lexeme.Length;\n"+
 
 		"\n"+
 
-		"            case ACCEPT:\n"+
+        "                _currentToken = new Token(DOLLAR, \"$\", pos);\n"+
 
-		"                return true;\n"+
+        "            }\n"+
+
+        "\n"+
+
+        "            int token = _currentToken.Id;\n"+
+
+		"            int state = (int)_stack.Peek();\n"+
 
 		"\n"+
 
-		"            case ERROR:\n"+
+        "            int[] cmd = PARSER_TABLE[state][token-1];\n"+
 
-		"                throw new SyntaticError(PARSER_ERROR[state], currentToken.getPosition());\n"+
+		"\n"+
+
+		"            switch (cmd[0])\n"+
+
+		"            {\n"+
+
+		"                case SHIFT:\n"+
+
+		"                    _stack.Push(cmd[1]);\n"+
+
+		"                    _previousToken = _currentToken;\n"+
+
+		"                    _currentToken = _scanner.NextToken();\n"+
+
+		"                    return false;\n"+
+
+		"\n"+
+
+		"                case REDUCE:\n"+
+
+		"                    int[] prod = PRODUCTIONS[cmd[1]];\n"+
+
+		"\n"+
+
+		"                    for (int i=0; i<prod[1]; i++)\n"+
+
+		"                        _stack.Pop();\n"+
+
+		"\n"+
+
+		"                    int oldState = (int)_stack.Peek();\n"+
+
+		"                    _stack.Push(PARSER_TABLE[oldState][prod[0]-1][1]);\n"+
+
+		"                    return false;\n"+
+
+		"\n"+
+
+		"                case ACTION:\n"+
+
+		"                    int action = FIRST_SEMANTIC_ACTION + cmd[1] - 1;\n"+
+
+		"                    _stack.Push(PARSER_TABLE[state][action][1]);\n"+
+
+		"                    _semanticAnalyser.ExecuteAction(cmd[1], _previousToken);\n"+
+
+		"                    return false;\n"+
+
+		"\n"+
+
+		"                case ACCEPT:\n"+
+
+		"                    return true;\n"+
+
+		"\n"+
+
+		"                case ERROR:\n"+
+
+		"                    throw new SyntaticError(PARSER_ERROR[state], _currentToken.Position);\n"+
+
+		"            }\n"+
+
+		"            return false;\n"+
 
 		"        }\n"+
-
-		"        return false;\n"+
-
-		"    }\n"+
 
 		"\n"
 
@@ -392,7 +350,7 @@ public class CSharpParserGenerator
 
 		);
 
-		result.append("}\n");
+		result.append("    }\n");
 
 
 
@@ -412,7 +370,7 @@ public class CSharpParserGenerator
 
 		String classname = parserOptions.parserName;
 
-		result.append("public class ").append(classname).append(" implements Constants\n{\n");
+		result.append("    public class ").append(classname).append("\n    {\n");
 
 		
 
@@ -424,15 +382,15 @@ public class CSharpParserGenerator
 
 		String variables = 
 
-		"    private Stack stack = new Stack();\n"+
+		"        private Stack _stack = new Stack();\n"+
 
-		"    private Token currentToken;\n"+
+		"        private Token _currentToken;\n"+
 
-		"    private Token previousToken;\n"+
+		"        private Token _previousToken;\n"+
 
-		"    private "+scannerName+" scanner;\n"+
+		"        private "+scannerName+" _scanner;\n"+
 
-		"    private "+semanName+" semanticAnalyser;\n"+
+		"        private "+semanName+" _semanticAnalyser;\n"+
 
 		"\n";
 
@@ -446,7 +404,7 @@ public class CSharpParserGenerator
 
 		
 
-		result.append("}\n");
+		result.append("    }\n");
 
 
 
@@ -498,33 +456,33 @@ public class CSharpParserGenerator
 
 		return 
 
-		"    private static final boolean isTerminal(int x)\n"+
+		"        private static bool IsTerminal(int x)\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        return x < FIRST_NON_TERMINAL;\n"+
+		"            return x < FIRST_NON_TERMINAL;\n"+
 
-		"    }\n"+
-
-		"\n"+
-
-		"    private static final boolean isNonTerminal(int x)\n"+
-
-		"    {\n"+
-
-		"        return x >= FIRST_NON_TERMINAL && x < FIRST_SEMANTIC_ACTION;\n"+
-
-		"    }\n"+
+		"        }\n"+
 
 		"\n"+
 
-		"    private static final boolean isSemanticAction(int x)\n"+
+		"        private static bool IsNonTerminal(int x)\n"+
 
-		"    {\n"+
+		"        {\n"+
 
-		"        return x >= FIRST_SEMANTIC_ACTION;\n"+
+		"            return x >= FIRST_NON_TERMINAL && x < FIRST_SEMANTIC_ACTION;\n"+
 
-		"    }\n"+
+		"        }\n"+
+
+		"\n"+
+
+		"        private static bool IsSemanticAction(int x)\n"+
+
+		"        {\n"+
+
+		"            return x >= FIRST_SEMANTIC_ACTION;\n"+
+
+		"        }\n"+
 
 		"";
 
@@ -544,33 +502,33 @@ public class CSharpParserGenerator
 
 		return 
 
-		"    public void parse("+scannerName+" scanner, "+semanName+" semanticAnalyser) throws LexicalError, SyntaticError, SemanticError\n"+
+		"        public void Parse("+scannerName+" scanner, "+semanName+" semanticAnalyser)\n"+
 
-	    "    {\n"+
+	    "        {\n"+
 
-		"        this.scanner = scanner;\n"+
+		"            _scanner = scanner;\n"+
 
-		"        this.semanticAnalyser = semanticAnalyser;\n"+
-
-		"\n"+
-
-		"        stack.clear();\n"+
-
-		"        stack.push(new Integer(DOLLAR));\n"+
-
-		"        stack.push(new Integer(START_SYMBOL));\n"+
+		"            _semanticAnalyser = semanticAnalyser;\n"+
 
 		"\n"+
 
-		"        currentToken = scanner.nextToken();\n"+
+		"            _stack.Clear();\n"+
+
+		"            _stack.Push(DOLLAR);\n"+
+
+		"            _stack.Push(START_SYMBOL);\n"+
 
 		"\n"+
 
-		"        while ( ! step() )\n"+
+		"            _currentToken = _scanner.NextToken();\n"+
+
+		"\n"+
+
+		"            while ( ! Step() )\n"+
 
 		"            ;\n"+
 
-	    "    }\n"+		
+	    "        }\n"+		
 
 		"";
 
@@ -584,139 +542,72 @@ public class CSharpParserGenerator
 
 		return 
 
-		"    private boolean step() throws LexicalError, SyntaticError, SemanticError\n"+
-
-		"    {\n"+			
-
-		"        if (currentToken == null)\n"+
-
-        "        {\n"+
-
-		"            int pos = 0;\n"+
-
-		"            if (previousToken != null)\n"+
-
-		"                pos = previousToken.getPosition()+previousToken.getLexeme().length();\n"+
-
-		"\n"+
-
-        "            currentToken = new Token(DOLLAR, \"$\", pos);\n"+
-
-        "        }\n"+
-
-        "\n"+
-
-		"        int x = ((Integer)stack.pop()).intValue();\n"+
-
-		"        int a = currentToken.getId();\n"+
-
-		"\n"+
-
-		"        if (x == EPSILON)\n"+
-
-		"        {\n"+
-
-		"            return false;\n"+
-
-		"        }\n"+
-
-		"        else if (isTerminal(x))\n"+
-
-		"        {\n"+
-
-		"            if (x == a)\n"+
-
-		"            {\n"+
-
-		"                if (stack.empty())\n"+
-
-		"                    return true;\n"+
-
-		"                else\n"+
-
-		"                {\n"+
-
-		"                    previousToken = currentToken;\n"+
-
-		"                    currentToken = scanner.nextToken();\n"+
-
-		"                    return false;\n"+
-
-		"                }\n"+
-
-		"            }\n"+
-
-		"            else\n"+
-
-		"            {\n"+
-
-		"                throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());\n"+
-
-		"            }\n"+
-
-		"        }\n"+
-
-		"        else if (isNonTerminal(x))\n"+
-
-		"        {\n"+
-
-		"            if (pushProduction(x, a))\n"+
-
-		"                return false;\n"+
-
-		"            else\n"+
-
-		"                throw new SyntaticError(PARSER_ERROR[x], currentToken.getPosition());\n"+
-
-		"        }\n"+
-
-		"        else // isSemanticAction(x)\n"+
-
-		"        {\n"+
-
-		"            semanticAnalyser.executeAction(x-FIRST_SEMANTIC_ACTION, previousToken);\n"+
-
-		"            return false;\n"+
-
-		"        }\n"+
-
-		"    }\n"+
-
-		"\n"+
-
-		"    private boolean pushProduction(int topStack, int tokenInput)\n"+
-
-		"    {\n"+
-
-		"        int p = PARSER_TABLE[topStack-FIRST_NON_TERMINAL][tokenInput-1];\n"+
-
-		"        if (p >= 0)\n"+
-
-		"        {\n"+
-
-		"            int[] production = PRODUCTIONS[p];\n"+
-
-		"            //empilha a produção em ordem reversa\n"+
-
-		"            for (int i=production.length-1; i>=0; i--)\n"+
-
-		"            {\n"+
-
-		"                stack.push(new Integer(production[i]));\n"+
-
-		"            }\n"+
-
-		"            return true;\n"+
-
-		"        }\n"+
-
-		"        else\n"+
-
-		"            return false;\n"+
-
-		"    }\n"+
-
-		"";
+		"        private bool Step()\n"
+		+ "        {\n"
+		+ "            if (_currentToken == null)\n"
+		+ "            {\n"
+		+ "                int pos = 0;\n"
+		+ "                if (_previousToken != null)\n"
+		+ "                    pos = _previousToken.Position + _previousToken.Lexeme.Length;\n"
+		+ "\n"
+		+ "                _currentToken = new Token(DOLLAR, \"$\", pos);\n"
+		+ "            }\n"
+		+ "\n"
+		+ "            int x = (int)_stack.Pop();\n"
+		+ "            int a = _currentToken.Id;\n"
+		+ "\n"
+		+ "            if (x == EPSILON)\n"
+		+ "            {\n"
+		+ "                return false;\n"
+		+ "            }\n"
+		+ "            else if (IsTerminal(x))\n"
+		+ "            {\n"
+		+ "                if (x == a)\n"
+		+ "                {\n"
+		+ "                    if (_stack.Empty())\n"
+		+ "                        return true;\n"
+		+ "                    else\n"
+		+ "                    {\n"
+		+ "                        _previousToken = _currentToken;\n"
+		+ "                        _currentToken = _scanner.NextToken();\n"
+		+ "                        return false;\n"
+		+ "                    }\n"
+		+ "                }\n"
+		+ "                else\n"
+		+ "                {\n"
+		+ "                    throw new SyntaticError(PARSER_ERROR[x], _currentToken.Position);\n"
+		+ "                }\n"
+		+ "            }\n"
+		+ "            else if (IsNonTerminal(x))\n"
+		+ "            {\n"
+		+ "                if (PushProduction(x, a))\n"
+		+ "                    return false;\n"
+		+ "                else\n"
+		+ "                    throw new SyntaticError(PARSER_ERROR[x], _currentToken.Position);\n"
+		+ "            }\n"
+		+ "            else // isSemanticAction(x)\n"
+		+ "            {\n"
+		+ "                _semanticAnalyser.ExecuteAction(x - FIRST_SEMANTIC_ACTION, _previousToken);\n"
+		+ "                return false;\n"
+		+ "            }\n"
+		+ "        }\n"
+		+ "\n"
+		+ "        private bool PushProduction(int topStack, int tokenInput)\n"
+		+ "        {\n"
+		+ "            int p = PARSER_TABLE[topStack - FIRST_NON_TERMINAL][tokenInput - 1];\n"
+		+ "            if (p >= 0)\n"
+		+ "            {\n"
+		+ "                int[] production = PRODUCTIONS[p];\n"
+		+ "                //empilha a produção em ordem reversa\n"
+		+ "                for (int i = production.Length - 1; i >= 0; i--)\n"
+		+ "                {\n"
+		+ "                    _stack.Push(production[i]);\n"
+		+ "                }\n"
+		+ "                return true;\n"
+		+ "            }\n"
+		+ "            else\n"
+		+ "                return false;\n"
+		+ "        }\n";
 
 	}
 
@@ -736,7 +627,7 @@ public class CSharpParserGenerator
 
 		String classname = parserOptions.parserName;
 
-		result.append("public class ").append(classname).append(" implements Constants\n{\n");
+		result.append("    public class ").append(classname).append("\n{\n");
 
 
 
@@ -748,13 +639,13 @@ public class CSharpParserGenerator
 
 		String variables = 
 
-		"    private Token currentToken;\n"+
+		"        private Token _currentToken;\n"+
 
-		"    private Token previousToken;\n"+
+		"        private Token _previousToken;\n"+
 
-		"    private "+scannerName+" scanner;\n"+
+		"        private "+scannerName+" _scanner;\n"+
 
-		"    private "+semanName+" semanticAnalyser;\n"+
+		"        private "+semanName+" _semanticAnalyser;\n"+
 
 		"\n";
 
@@ -766,70 +657,70 @@ public class CSharpParserGenerator
 
 		result.append(	
 
-		"    public void parse("+scannerName+" scanner, "+semanName+" semanticAnalyser) throws AnalysisError\n"+
-
-		"    {\n"+
-
-		"        this.scanner = scanner;\n"+
-
-		"        this.semanticAnalyser = semanticAnalyser;\n"+
-
-		"\n"+
-
-		"        currentToken = scanner.nextToken();\n"+
-
-		"        if (currentToken == null)\n"+
-		"            currentToken = new Token(DOLLAR, \"$\", 0);\n"+
-
-		"\n"+
-
-		"        "+rd.getStart()+"();\n"+
-
-		"\n"+
-
-		"        if (currentToken.getId() != DOLLAR)\n"+
-
-		"            throw new SyntaticError(PARSER_ERROR[DOLLAR], currentToken.getPosition());\n"+
-
-		"    }\n"+		
-
-		"\n"+
-
-		"    private void match(int token) throws AnalysisError\n"+
-
-		"    {\n"+
-
-		"        if (currentToken.getId() == token)\n"+
+		"        public void Parse("+scannerName+" scanner, "+semanName+" semanticAnalyser)\n"+
 
 		"        {\n"+
 
-		"            previousToken = currentToken;\n"+
+		"            _scanner = scanner;\n"+
 
-		"            currentToken = scanner.nextToken();\n"+
-
-		"            if (currentToken == null)\n"+
-
-		"            {\n"+
-
-		"                int pos = 0;\n"+
-
-		"                if (previousToken != null)\n"+
-
-		"                    pos = previousToken.getPosition()+previousToken.getLexeme().length();\n"+
+		"            _semanticAnalyser = semanticAnalyser;\n"+
 
 		"\n"+
 
-		"                currentToken = new Token(DOLLAR, \"$\", pos);\n"+
+		"            _currentToken = scanner.nextToken();\n"+
+
+		"            if (_currentToken == null)\n"+
+		"                _currentToken = new Token(DOLLAR, \"$\", 0);\n"+
+
+		"\n"+
+
+		"            "+rd.getStart()+"();\n"+
+
+		"\n"+
+
+		"            if (_currentToken.Id != DOLLAR)\n"+
+
+		"                throw new SyntaticError(PARSER_ERROR[DOLLAR], _currentToken.Position);\n"+
+
+		"        }\n"+		
+
+		"\n"+
+
+		"        private void Match(int token)\n"+
+
+		"        {\n"+
+
+		"            if (_currentToken.I) == token)\n"+
+
+		"            {\n"+
+
+		"                _previousToken = _currentToken;\n"+
+
+		"                _currentToken = _scanner.NextToken();\n"+
+
+		"                if (_currentToken == null)\n"+
+
+		"                {\n"+
+
+		"                    int pos = 0;\n"+
+
+		"                    if (_previousToken != null)\n"+
+
+		"                        pos = _previousToken.Position + _previousToken.Lexeme.Length;\n"+
+
+		"\n"+
+
+		"                    _currentToken = new Token(DOLLAR, \"$\", pos);\n"+
+
+		"                }\n"+
 
 		"            }\n"+
 
+		"            else\n"+
+
+		"                throw new SyntaticError(PARSER_ERROR[token], _currentToken.Position);\n"+
+
 		"        }\n"+
-
-		"        else\n"+
-
-		"            throw new SyntaticError(PARSER_ERROR[token], currentToken.getPosition());\n"+
-
-		"    }\n"+
 
 		"\n");
 
@@ -851,13 +742,13 @@ public class CSharpParserGenerator
 
 			result.append(
 
-						"    private void "+name+"() throws AnalysisError\n"+
+						"        private void "+name+"()\n"+
 
-						"    {\n"+
+						"        {\n"+
 
-						"        switch (currentToken.getId())\n"+
+						"            switch (_currentToken.Id)\n"+
 
-						"        {\n" );
+						"            {\n" );
 
 					
 
@@ -877,7 +768,7 @@ public class CSharpParserGenerator
 
 				result.append(
 
-						"            case "+token+": // "+rd.getSymbols(token)+"\n");
+						"                case "+token+": // "+rd.getSymbols(token)+"\n");
 
 				for (int j=i+1; j<keys.size(); j++)
 
@@ -893,7 +784,7 @@ public class CSharpParserGenerator
 
 						result.append(
 
-						"            case "+token+": // "+rd.getSymbols(token)+"\n");
+						"                case "+token+": // "+rd.getSymbols(token)+"\n");
 
 						keys.remove(j);
 
@@ -909,7 +800,7 @@ public class CSharpParserGenerator
 
 					result.append(
 
-						"                // EPSILON\n");	
+						"                    // EPSILON\n");	
 
 			
 
@@ -925,7 +816,7 @@ public class CSharpParserGenerator
 
 						result.append(
 
-						"                match("+s+"); // "+rd.getSymbols(s)+"\n");	
+						"                    Match("+s+"); // "+rd.getSymbols(s)+"\n");	
 
 					}
 
@@ -935,7 +826,7 @@ public class CSharpParserGenerator
 
 						result.append(
 
-						"                "+rd.getSymbols(s)+"();\n");	
+						"                    "+rd.getSymbols(s)+"();\n");	
 
 					}
 
@@ -945,7 +836,7 @@ public class CSharpParserGenerator
 
 						result.append(
 
-						"                semanticAnalyser.executeAction("+(s-g.FIRST_SEMANTIC_ACTION())+", previousToken);\n");
+						"                    _semanticAnalyser.ExecuteAction("+(s-g.FIRST_SEMANTIC_ACTION())+", _previousToken);\n");
 
 					}
 
@@ -955,7 +846,7 @@ public class CSharpParserGenerator
 
 				result.append(
 
-						"                break;\n");
+						"                    break;\n");
 
 			}
 
@@ -963,13 +854,13 @@ public class CSharpParserGenerator
 
 			result.append(
 
-						"            default:\n"+
+						"                default:\n"+
 
-						"                throw new SyntaticError(PARSER_ERROR["+f.lhs+"], currentToken.getPosition());\n"+
+						"                    throw new SyntaticError(PARSER_ERROR["+f.lhs+"], _currentToken.Position);\n"+
+
+						"            }\n"+
 
 						"        }\n"+
-
-						"    }\n"+
 
 						"\n");
 
@@ -977,7 +868,7 @@ public class CSharpParserGenerator
 
 		
 
-		result.append("}\n");
+		result.append("    }\n");
 
 
 
@@ -993,40 +884,39 @@ public class CSharpParserGenerator
 
 		StringBuffer result = new StringBuffer();
 
-		
-
-		String package_ = options.pkgName;
-
-		if (package_ != null && !package_.equals(""))
-
-			result.append("package " + package_ + ";\n\n");
-
-			
-
 		String cls = 
 
-		"public class "+options.semanticName+" implements Constants\n"+
+		"    public class "+options.semanticName+"\n"+
 
-		"{\n"+
-
-		"    public void executeAction(int action, Token token)	throws SemanticError\n"+
-
-		"    {\n"+
-
-		"        System.out.println(\"Ação #\"+action+\", Token: \"+token);\n"+
-
-		"    }	\n"+
-
-		"}\n"+
-
+		"    {\n" +
+		"        public void ExecuteAction(int action, Token token)\n"+
+		"        {\n"+
+		"            System.Console.WriteLine($\"Ação #{action}, Token: {token}\");\n"+
+		"        }\n"+
+		"    }\n"+
 		"";
 
 		
 
 		result.append(cls);
 
-		
+		CSharpCommonGenerator.colocarNamespace(result, options);
 
+		
+		
+		String package_ = options.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		String usings;
+		if(usePackage) {
+			usings = "using static " + package_ + ".Constants;\n\n";
+		}else {
+			usings = "using static Constants;\n\n";
+		}
+		result.insert(0, usings);
+		
+		
+		
 		return result.toString();
 
 	}

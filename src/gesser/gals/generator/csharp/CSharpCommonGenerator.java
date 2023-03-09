@@ -30,7 +30,11 @@ import static gesser.gals.generator.Options.Parser.*;
 
 import static gesser.gals.generator.Options.ScannerTable.*;
 
-
+/**
+ * 
+ * @author Gustavo
+ *
+ */
 
 public class CSharpCommonGenerator
 
@@ -121,7 +125,7 @@ public class CSharpCommonGenerator
 
 		String cls = 
 
-		"    public class AnalysisError : Exception\n"
+		"    public class AnalysisError : System.Exception\n"
 		+ "    {\n"
 		+ "        public int Position { get; private set; }\n"
 		+ "\n"
@@ -249,7 +253,7 @@ public class CSharpCommonGenerator
 
 	}
 
-	private void colocarNamespace(StringBuffer result, Options options) {
+	public static void colocarNamespace(StringBuffer result, Options options) {
 		String package_ = options.pkgName;
 		boolean usePackage = package_ != null && !package_.equals("");
 		

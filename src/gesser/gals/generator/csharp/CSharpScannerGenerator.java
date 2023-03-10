@@ -135,7 +135,7 @@ public class CSharpScannerGenerator
 		"    {\n";
 		if (options.input == STRING)
 		{
-			cls +=    "        public int Position { private get; set; }\n"
+			cls +=    "        private int _position = 0;\n"
 					+ "        \n"
 					+ "        private string _input;\n"
 					+ "        public string Input \n"
@@ -144,7 +144,7 @@ public class CSharpScannerGenerator
 					+ "            set \n"
 					+ "            { \n"
 					+ "                _input = value; \n"
-					+ "                Position = 0;\n"
+					+ "                _position = 0;\n"
 					+ "            }\n"
 					+ "        }\n"
 					+ "\n"
@@ -152,27 +152,29 @@ public class CSharpScannerGenerator
 					+ "\n"
 					+ "        public " + options.scannerName + "(string input) => Input = input;\n"
 					+ "\n"
-					+ "        private string Substring(int start, int end)\n"
-					+ "        {\n"
-					+ "            return Input.Substring(start, end - start);\n"
-					+ "        }\n"
-					+ "\n"
 					+ "        private char NextChar()\n"
 					+ "        {\n"
 					+ "            if (HasInput())\n"
-					+ "                return Input[Position++];\n"
+					+ "                return Input[_position++];\n"
 					+ "            else\n"
-					+ "                return char.MaxValue; \n"
+					+ "                return char.MaxValue;\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        private char PeekNextChar()\n"
+					+ "\n"
+					+ "        {\n"
+					+ "            return Input[_position];\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        private bool HasInput()\n"
+					+ "        {\n"
+					+ "            return _position < Input.Length;\n"
 					+ "        }\n"
 					+ "\n";			
 		}
 		else
 		{
-			cls +=    "        public int Position \n"
-					+ "        { \n"
-					+ "            private get => (int) _input.Position;\n"
-					+ "            set => _input.Position = value;\n"
-					+ "        }\n"
+			cls +=    "        private int _position = 0;\n"
 					+ "\n"
 					+ "        private StreamReader _streamReader;\n"
 					+ "\n"
@@ -198,30 +200,21 @@ public class CSharpScannerGenerator
 					+ "\n"
 					+ "        public " + options.scannerName + "(Stream input) => Input = input;\n"
 					+ "\n"
-					+ "        private string Substring(int start, int end)\n"
-					+ "        {\n"
-					+ "            var len = end - start;\n"
-					+ "            char[] buffer = new char[len];\n"
-					+ "            var pos = Position;\n"
-					+ "            Position = start;\n"
-					+ "            var readed = _streamReader.Read(buffer, 0, len);\n"
-					+ "            Position = pos;\n"
-					+ "            if (readed != len) throw new IndexOutOfRangeException();\n"
-					+ "            return new string(buffer);\n"
-					+ "        }\n"
-					+ "        \n"
 					+ "        private char NextChar()\n"
 					+ "        {\n"
-					+ "            char[] buffer = new char[1];\n"
-					+ "            if (_streamReader.Read(buffer, 0, 1) > 0)\n"
-					+ "            {\n"
-					+ "                return buffer[0];\n"
-					+ "            }\n"
-					+ "            else\n"
-					+ "            {\n"
-					+ "                return char.MaxValue;\n"
-					+ "            }\n"
+					+ "            _position++;\n"
+					+ "            return (char)_streamReader.Read();\n"
 					+ "        }\n"
+					+ "\n"
+					+ "        private char PeekNextChar()\n"
+					+ "        {\n"
+					+ "            return (char)_streamReader.Peek();\n"
+					+ "        }\n"
+					+ "\n"
+					+ "        private bool HasInput()\n"
+					+ "        {\n"
+					+ "            return !_streamReader.EndOfStream;\n"
+					+ "        }"
 					+ "\n";
 		}
 		cls +=
@@ -262,7 +255,7 @@ public class CSharpScannerGenerator
 
 		"\n"+		
 
-		"            int start = Position;\n"+
+		"            int start = _position;\n"+
 
 		"\n"+		
 
@@ -271,8 +264,8 @@ public class CSharpScannerGenerator
 		"            int lastState = 0;\n"+
 
 		"            int endState = -1;\n"+
-
-		"            int end = -1;\n"+
+		
+		"            string lexeme = \"\";\n"+
 
 		(fa.hasContext() ?
 
@@ -288,7 +281,7 @@ public class CSharpScannerGenerator
 
 		"                lastState = state;\n"+
 
-		"                state = NextState(NextChar(), state);\n"+
+		"                state = NextState(PeekNextChar(), state);\n"+
 
 		"\n"+
 
@@ -301,14 +294,14 @@ public class CSharpScannerGenerator
 		"                else\n"+
 
 		"                {\n"+
+		
+		"                    lexeme += NextChar();\n"+
 
 		"                    if (TokenForState(state) >= 0)\n"+
 
 		"                    {\n"+
 
 		"                        endState = state;\n"+
-
-		"                        end = Position;\n"+
 
 		"                    }\n"+
 
@@ -317,7 +310,7 @@ public class CSharpScannerGenerator
 		"                    if (SCANNER_CONTEXT[state][0] == 1)\n" +
 		"                    {\n" +
 		"                        ctxtState = state;\n" +
-		"                        ctxtEnd = Position;\n" +
+		"                        ctxtEnd = _position;\n" +
 		"                    }\n" : "")+
 
 		"                }\n"+
@@ -337,8 +330,6 @@ public class CSharpScannerGenerator
 
 		"\n" : "" )+
 
-		"            Position = end;\n"+
-
 		"\n"+
 
 		"            int token = TokenForState(endState);\n"+
@@ -352,8 +343,6 @@ public class CSharpScannerGenerator
 		"            else\n"+
 
 		"            {\n"+
-
-		"                string lexeme = Substring(start, end);\n"+
 
 		(lookup ?
 
@@ -467,7 +456,7 @@ public class CSharpScannerGenerator
 
 				"            case "+i+":\n"+
 
-				"                switch (c)\n"+
+				"                switch ((byte)c)\n"+
 
 				"                {\n");
 
@@ -602,14 +591,6 @@ public class CSharpScannerGenerator
 		"        }\n"+
 
 		"\n":"")+
-
-		"        private bool HasInput()\n"+
-
-		"        {\n"+
-
-		"            return Position < Input.Length;\n"+
-
-		"        }\n"+
 
 		"\n";
 

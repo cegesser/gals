@@ -3,7 +3,6 @@
  * @author Gesser
  *
  */
-
 public class NotLLException extends Exception
 {	
 	public NotLLException(String string)

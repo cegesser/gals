@@ -5,7 +5,6 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package gesser.gals.util;
-
 /**
  * @author gesser
  *

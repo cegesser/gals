@@ -1,11 +1,8 @@
 ﻿package gesser.gals.simulator;
-
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
 import gesser.gals.analyser.*;
 import gesser.gals.generator.parser.Grammar;
-
 public class SimpleScanner
 {
 	private StringTokenizer tknzr;

@@ -1,6 +1,5 @@
 ﻿package gesser.gals.analyser;
 
-
 public class AnalysisError extends Exception
 {	
 	private int position;

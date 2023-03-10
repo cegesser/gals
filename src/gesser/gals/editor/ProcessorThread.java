@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, you can get it at http://www.gnu.org/licenses/gpl.txt
  */
-
 package gesser.gals.editor;
-
 import gesser.gals.MainWindow;
 import gesser.gals.analyser.AnalysisError;
 import gesser.gals.ebnf.SymbolManager;
@@ -25,15 +23,12 @@ import gesser.gals.ebnf.parser.Parser;
 import gesser.gals.ebnf.parser.Scanner;
 import gesser.gals.ebnf.parser.tokens.EofToken;
 import gesser.gals.ebnf.parser.tokens.Token;
-
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * @author gesser
  */
-
 public class ProcessorThread extends Thread
 {    
 	private transient boolean working = false;
@@ -152,7 +147,6 @@ public class ProcessorThread extends Thread
                 productions.add(null);
             }
         }
-
         updateTree();
         updateErrors();
     }
@@ -172,7 +166,6 @@ public class ProcessorThread extends Thread
                     e.printStackTrace();
                 }
             }
-
             try
             {
             	work();            	

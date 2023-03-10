@@ -14,19 +14,15 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, you can get it at http://www.gnu.org/licenses/gpl.txt
  */
-
 package gesser.gals;
-
 import java.util.Collections;
 import java.util.List;
 import gesser.gals.ebnf.decl.ProductionDecl;
 import gesser.gals.ebnf.decl.Sequence;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-
 class ProdHolder
 {
 	private ProductionDecl p;
@@ -57,11 +53,9 @@ class ProdHolder
 		}
 	}
 }
-
 /**
  * @author gesser
  */
-
 public class GrammarTreeModel extends  DefaultTreeModel
 {
 	private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -112,7 +106,6 @@ public class GrammarTreeModel extends  DefaultTreeModel
     		}
     	}
     }
-
 	/**
 	 * @param p
 	 * @param n

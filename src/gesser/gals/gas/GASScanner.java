@@ -1,23 +1,18 @@
 ﻿package gesser.gals.gas;
-
 import gesser.gals.analyser.LexicalError;
 import gesser.gals.analyser.Token;
-
 public class GASScanner implements Constants
 {
     private int position;
     private String input;
-
     public GASScanner()
     {
         this(new java.io.StringReader(""));
     }
-
     public GASScanner(java.io.Reader input)
     {
         setInput(input);
     }
-
     public void setInput(java.io.Reader input)
     {
         StringBuffer bfr = new StringBuffer();		
@@ -35,33 +30,25 @@ public class GASScanner implements Constants
         {
             e.printStackTrace();
         }
-
         setPosition(0);
     }
-
     public void setPosition(int pos)
     {
         position = pos;
     }
-
     public Token nextToken() throws LexicalError
     {
         if ( ! hasInput() )
             return null;
-
         int start = position;
-
         int state = 0;
         int endState = -1;
         int end = -1;
-
         while (true)
         {
             if (! hasInput())
                 break;
-
             state = nextState(nextChar(), state);
-
             if (state < 0)
             {
                 break;
@@ -77,11 +64,8 @@ public class GASScanner implements Constants
         }
         if (endState < 0)
             handleError(start, position-1);
-
         position = end;
-
         int token = tokenForState(endState);
-
         if (token == 0)
             return nextToken();
         else
@@ -91,7 +75,6 @@ public class GASScanner implements Constants
             return new Token(token, lexeme, start);
         }
     }
-
     private void handleError(int tokenStart, int position) throws LexicalError
     {
         throw new LexicalError("Token inválido: "+input.substring(tokenStart, position), tokenStart);
@@ -115,25 +98,20 @@ public class GASScanner implements Constants
 		
 		return -1;
     }
-
     private int tokenForState(int state)
     {
         if (state < 0 || state >= TOKEN_STATE.length)
             return -1;
-
         return TOKEN_STATE[state];
     }
-
     public int lookupToken(int base, String key)
     {
         int start = SPECIAL_CASES_INDEXES[base];
         int end   = SPECIAL_CASES_INDEXES[base+1]-1;
-
         while (start <= end)
         {
             int half = (start+end)/2;
             int comp = SPECIAL_CASES_KEYS[half].compareTo(key);
-
             if (comp == 0)
                 return SPECIAL_CASES_VALUES[half];
             else if (comp < 0)
@@ -141,15 +119,12 @@ public class GASScanner implements Constants
             else  //(comp > 0)
                 end = half-1;
         }
-
         return base;
     }
-
     private boolean hasInput()
     {
         return position < input.length();
     }
-
     private char nextChar()
     {
         if (hasInput())

@@ -1,13 +1,10 @@
 ﻿package gesser.gals.util;
-
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
-
 import gesser.gals.InputPane;
 import gesser.gals.generator.Options;
-
 public class GalsData
 {
 	private InputPane.Data data;
@@ -18,7 +15,6 @@ public class GalsData
 		this.options = options;
 		this.data = data;
 	}
-
 	public InputPane.Data getData()
 	{
 		return data;
@@ -54,7 +50,6 @@ public class GalsData
 		
 		return bfr.toString();
 	}
-
 	public static GalsData fromReader(Reader r) throws XMLParsingException
 	{
 		Options opt = null;
@@ -121,7 +116,6 @@ public class GalsData
 		
 		return new GalsData(opt, new InputPane.Data(defs, tokens, nonTerms, gram));
 	}
-
 	public static GalsData fromString(String str) throws XMLParsingException
 	{
 		return fromReader(new StringReader(str));

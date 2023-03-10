@@ -5,9 +5,7 @@
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 package gesser.gals.generator.parser.lr;
-
 import gesser.gals.generator.parser.Grammar;
-
 /**
  * @author Gesser
  *

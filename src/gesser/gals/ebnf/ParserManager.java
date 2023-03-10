@@ -15,21 +15,17 @@
  * this program; if not, you can get it at http://www.gnu.org/licenses/gpl.txt
  */
 package gesser.gals.ebnf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import gesser.gals.analyser.AnalysisError;
 import gesser.gals.ebnf.decl.ProductionDecl;
 import gesser.gals.ebnf.parser.Parser;
 import gesser.gals.ebnf.parser.Scanner;
 import gesser.gals.ebnf.parser.tokens.Token;
-
 /**
  * @author gesser
  */
-
 public class ParserManager 
 {
 	private Scanner scanner = new Scanner();
@@ -87,7 +83,6 @@ public class ParserManager
 		
 		return tokens.subList(start, end);
 	}
-
 	public List<Token> getTokens() 
 	{
 		return tokens;

@@ -1,9 +1,6 @@
 ﻿package gesser.gals;
-
 import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
 public class FileFilters extends FileFilter
 {
 	private String description;
@@ -25,7 +22,6 @@ public class FileFilters extends FileFilter
 		int length = name.length();
 		return (length > extension.length()) && name.substring(length-extension.length()).equals(extension);
 	}
-
 	public String getDescription()
 	{
 		return description;

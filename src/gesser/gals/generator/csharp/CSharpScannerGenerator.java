@@ -332,10 +332,10 @@ public class CSharpScannerGenerator
 		"        }\n"+
 		"\n"+
 		(lookup ?
-		"        public int LookupToken(int base, string key)\n"+
+		"        public int LookupToken(int @base, string key)\n"+
 		"        {\n"+
-		"            int start = SPECIAL_CASES_INDEXES[base];\n"+
-		"            int end   = SPECIAL_CASES_INDEXES[base+1]-1;\n"+
+		"            int start = SPECIAL_CASES_INDEXES[@base];\n"+
+		"            int end   = SPECIAL_CASES_INDEXES[@base+1]-1;\n"+
 		"\n"+
 		(sensitive?"":
 		"            key = key.ToUpper();\n"+
@@ -353,7 +353,7 @@ public class CSharpScannerGenerator
 		"                    end = half-1;\n"+
 		"            }\n"+		
 		"\n"+
-		"            return base;\n"+
+		"            return @base;\n"+
 		"        }\n"+
 		"\n":"")+
 		"\n";

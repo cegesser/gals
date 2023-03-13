@@ -1,4 +1,4 @@
-﻿package gesser.gals.generator.java;
+﻿package gesser.gals.generator.csharp;
 
 import gesser.gals.generator.Options;
 import gesser.gals.generator.parser.Grammar;
@@ -14,8 +14,12 @@ import java.util.*;
 
 import static gesser.gals.generator.Options.Parser.*;
 import static gesser.gals.generator.Options.ScannerTable.*;
-
-public class JavaCommonGenerator
+/**
+ * 
+ * @author Gustavo
+ * @see gesser.gals.generator.java.JavaCommonGenerator
+ */
+public class CSharpCommonGenerator
 {
 	int[][][] lrTable = null;
 	
@@ -23,18 +27,18 @@ public class JavaCommonGenerator
 	{
 		Map<String, String> result = new HashMap<String, String>();
 				
-		result.put("Token.java", generateToken(options));
+		result.put("Token.cs", generateToken(options));
 
-		result.put("Constants.java", generateConstants(fa, g, options));
+		result.put("Constants.cs", generateConstants(fa, g, options));
 		if (fa != null)
-			result.put("ScannerConstants.java", generateScannerConstants(fa, options));
+			result.put("ScannerConstants.cs", generateScannerConstants(fa, options));
 		if (g != null)
-			result.put("ParserConstants.java", generateParserConstants(g, options));	
+			result.put("ParserConstants.cs", generateParserConstants(g, options));	
 		
-		result.put("AnalysisError.java", generateAnalysisError(options));
-		result.put("LexicalError.java", generateLexicalError(options));
-		result.put("SyntaticError.java", generateSyntaticError(options));
-		result.put("SemanticError.java", generateSemanticError(options));	
+		result.put("AnalysisError.cs", generateAnalysisError(options));
+		result.put("LexicalError.cs", generateLexicalError(options));
+		result.put("SyntaticError.cs", generateSyntaticError(options));
+		result.put("SemanticError.cs", generateSemanticError(options));	
 		
 		return result;
 	}
@@ -42,119 +46,61 @@ public class JavaCommonGenerator
 	private String generateToken(Options options)
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-			
-		String cls = 
-		"public class Token\n"+
-		"{\n"+
-		"    private int id;\n"+
-		"    private String lexeme;\n"+
-		"    private int position;\n"+
-		"\n"+
-		"    public Token(int id, String lexeme, int position)\n"+
-		"    {\n"+
-		"        this.id = id;\n"+
-		"        this.lexeme = lexeme;\n"+
-		"        this.position = position;\n"+
-		"    }\n"+
-		"\n"+	
-		"    public final int getId()\n"+
-		"    {\n"+
-		"        return id;\n"+
-		"    }\n"+
-		"\n"+
-		"    public final String getLexeme()\n"+
-		"    {\n"+
-		"        return lexeme;\n"+
-		"    }\n"+
-		"\n"+
-		"    public final int getPosition()\n"+
-		"    {\n"+
-		"        return position;\n"+
-		"    }\n"+
-		"\n"+
-		"    public String toString()\n"+
-		"    {\n"+
-		"        return id+\" ( \"+lexeme+\" ) @ \"+position;\n"+
-		"    };\n"+
-		"}\n"+
-		"";
-		
+		String cls = "    public class Token\n"
+				+ "    {\n"
+				+ "        public int Id { get; private set; }\n"
+				+ "        public string Lexeme { get; private set; }\n"
+				+ "        public int Position { get; private set; }\n"
+				+ "\n"
+				+ "        public Token(int id, string lexeme, int position)\n"
+				+ "        {\n"
+				+ "            Id = id;\n"
+				+ "            Lexeme = lexeme;\n"
+				+ "            Position = position;\n"
+				+ "        }\n"
+				+ "\n"
+				+ "        public override string ToString() => $\"{Id} ( {Lexeme} ) @ {Position}\";\n"
+				+ "\n"
+				+ "    }";
 		result.append(cls);  
-		
+    	colocarNamespace(result, options);
+    	
 		return result.toString();
 	}
 	
 	private String generateAnalysisError(Options options)
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-			
 		String cls = 
-		"public class AnalysisError extends Exception\n"+
-		"{\n"+	
-		"    private int position;\n"+
-		"\n"+
-		"    public AnalysisError(String msg, int position)\n"+
-		"    {\n"+
-		"        super(msg);\n"+
-		"        this.position = position;\n"+
-		"    }\n"+
-		"\n"+	
-		"    public AnalysisError(String msg)\n"+
-		"    {\n"+
-		"        super(msg);\n"+
-		"        this.position = -1;\n"+
-	    "    }\n"+
-		"\n"+
-		"    public int getPosition()\n"+
-		"    {\n"+
-		"        return position;\n"+
-	    "    }\n"+
-		"\n"+
-		"    public String toString()\n"+
-		"    {\n"+
-		"        return super.toString() + \", @ \"+position;\n"+
-		"    }\n"+
-		"}\n"+
-		"";
-		
+		"    public class AnalysisError : System.Exception\n"
+		+ "    {\n"
+		+ "        public int Position { get; private set; }\n"
+		+ "\n"
+		+ "        public AnalysisError(string msg, int position) : base(msg) => Position = position;\n"
+		+ "\n"
+		+ "        public AnalysisError(string msg) : base(msg) { }\n"
+		+ "\n"
+		+ "        public override string ToString() => $\"{base.ToString()}, @ {Position}\";\n"
+		+ "    }";
 		result.append(cls);
-		
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 
 	private String generateLexicalError(Options options)
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-			
+
 		String cls = 
-		"public class LexicalError extends AnalysisError\n"+
-		"{\n"+
-		"    public LexicalError(String msg, int position)\n"+
-		"	 {\n"+
-		"        super(msg, position);\n"+
-		"    }\n"+
-		"\n"+
-		"    public LexicalError(String msg)\n"+
-		"    {\n"+
-		"        super(msg);\n"+
-		"    }\n"+
-		"}\n"+
-		"";
+		"    public class LexicalError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public LexicalError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public LexicalError(string msg): base(msg) { }\n"
+		+ "    }";
 		
 		result.append(cls);
-		
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 	
@@ -162,123 +108,98 @@ public class JavaCommonGenerator
 	{
 		StringBuffer result = new StringBuffer();
 		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-			
 		String cls = 
-		"public class SyntaticError extends AnalysisError\n"+
-		"{\n"+
-		"    public SyntaticError(String msg, int position)\n"+
-		"	 {\n"+
-		"        super(msg, position);\n"+
-		"    }\n"+
-		"\n"+
-		"    public SyntaticError(String msg)\n"+
-		"    {\n"+
-		"        super(msg);\n"+
-		"    }\n"+
-		"}\n"+
-		"";
+		"    public class SyntaticError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public SyntaticError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public SyntaticError(string msg) : base(msg) { }\n"
+		+ "    }";
 		
 		result.append(cls);
-		
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 	
 	private String generateSemanticError(Options options)
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-			
 		String cls = 
-		"public class SemanticError extends AnalysisError\n"+
-		"{\n"+
-		"    public SemanticError(String msg, int position)\n"+
-		"	 {\n"+
-		"        super(msg, position);\n"+
-		"    }\n"+
-		"\n"+
-		"    public SemanticError(String msg)\n"+
-		"    {\n"+
-		"        super(msg);\n"+
-		"    }\n"+
-		"}\n"+
-		"";
-		
+		"    public class SemanticError : AnalysisError\n"
+		+ "    {\n"
+		+ "        public SemanticError(string msg, int position) : base(msg, position) { }\n"
+		+ "\n"
+		+ "        public SemanticError(string msg) : base(msg) { }\n"
+		+ "    }";
 		result.append(cls);
-		
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 	
 	private String generateConstants(FiniteAutomata fa, Grammar g, Options options) throws NotLLException
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-		
-		String extInter = null;
-		if (fa == null)
-			extInter = "ParserConstants";
-		else if (g == null)
-			extInter = "ScannerConstants";
-		else
-			extInter = "ScannerConstants, ParserConstants";
-		
 		result.append(
-		"public interface Constants extends "+extInter+"\n"+
-		"{\n"+
-		"    int EPSILON  = 0;\n"+
-		"    int DOLLAR   = 1;\n"+
+		"    public static class Constants\n"+
+		"    {\n"+
+		"        public const int EPSILON  = 0;\n"+
+		"        public const int DOLLAR   = 1;\n"+
 		"\n"+
 		constList(fa, g)+
 		"\n" );
-		    	
-    	result.append("}\n");
-				
+    	result.append("    }");
+    	
+    	colocarNamespace(result, options);
 		return result.toString();
 	}
-
+	public static void colocarNamespace(StringBuffer result, Options options) {
+		String package_ = options.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		if (usePackage) {
+			result.insert(0, "namespace " + package_ + "\n{\n");
+			result.append("\n}");
+		}
+	}
+	
+	public static String emitStaticImport(Options parserOptions, String path) {
+		String package_ = parserOptions.pkgName;
+		boolean usePackage = package_ != null && !package_.equals("");
+		
+		if(usePackage) {
+			return  "using static " + package_ + "."+ path +  ";\n";
+		}
+		
+		return  "using static " + path + ";\n";
+	}
 	private String generateScannerConstants(FiniteAutomata fa, Options options)
 	{
 		StringBuffer result = new StringBuffer();
 		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-		
 		result.append(
-		"public interface ScannerConstants\n"+
-		"{\n");
+		"    public static class ScannerConstants\n"+
+		"    {\n");
 		
 		result.append(genLexTables(fa, options));
 			
-		result.append("}\n");
-				
+		result.append("    }\n");
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 	
 	private String generateParserConstants(Grammar g, Options options) throws NotLLException
 	{
 		StringBuffer result = new StringBuffer();
-		
-		String package_ = options.pkgName;
-		if (package_ != null && !package_.equals(""))
-			result.append("package " + package_ + ";\n\n");
-		
+
 		result.append(
-		"public interface ParserConstants\n"+
-		"{\n");
+		"    public static class ParserConstants\n"+
+		"    {\n");
 		
 		result.append(genSyntTables(g, options));
 			
-		result.append("}\n");
-				
+		result.append("    }\n");
+
+		colocarNamespace(result, options);
 		return result.toString();
 	}
 
@@ -322,12 +243,12 @@ public class JavaCommonGenerator
 	{
 		StringBuffer result = new StringBuffer();
 		
-		result.append("    int[][] SCANNER_CONTEXT =\n"+
-		              "    {\n");
+		result.append("        public static readonly int[][] SCANNER_CONTEXT =\n"+
+		              "        {\n");
 		
 		for (int i=0; i<fa.getTransitions().size(); i++)
 		{
-			result.append("        {");
+			result.append("            new[] {");
 			result.append(fa.isContext(i)?"1":"0");
 			result.append(", ");
 			result.append(fa.getOrigin(i));
@@ -336,7 +257,7 @@ public class JavaCommonGenerator
 		
 		result.setLength(result.length()-2);
 		result.append(
-		"\n    };\n");
+		"\n        };\n");
 		
 		return result.toString();
 	}
@@ -346,13 +267,13 @@ public class JavaCommonGenerator
 		StringBuffer result = new StringBuffer();
 
 		result.append(
-		"    String[] SCANNER_ERROR =\n"+
-		"    {\n");
+		"        public static readonly string[] SCANNER_ERROR =\n"+
+		"        {\n");
 
 		int count = fa.getTransitions().size();
 		for (int i=0; i< count; i++)
 		{
-			result.append("        \"");
+			result.append("            \"");
 			
 			String error = fa.getError(i);
 			for (int j=0; j<error.length(); j++)
@@ -367,7 +288,7 @@ public class JavaCommonGenerator
 		}
 		result.setLength(result.length()-2);
 		result.append(
-		"\n    };\n");
+		"\n        };\n");
 
 		return result.toString();
 	}
@@ -393,14 +314,14 @@ public class JavaCommonGenerator
 		lrTable = LRGeneratorFactory.createGenerator(g).buildIntTable();
 		
 		StringBuffer result = new StringBuffer(
-			"    int FIRST_SEMANTIC_ACTION = "+g.FIRST_SEMANTIC_ACTION()+";\n"+
+			"        public const int FIRST_SEMANTIC_ACTION = "+g.FIRST_SEMANTIC_ACTION()+";\n"+
 			"\n"+
-			"    int SHIFT  = 0;\n"+
-			"    int REDUCE = 1;\n"+
-			"    int ACTION = 2;\n"+
-			"    int ACCEPT = 3;\n"+
-			"    int GO_TO  = 4;\n"+
-			"    int ERROR  = 5;\n" );
+			"        public const int SHIFT  = 0;\n"+
+			"        public const int REDUCE = 1;\n"+
+			"        public const int ACTION = 2;\n"+
+			"        public const int ACCEPT = 3;\n"+
+			"        public const int GO_TO  = 4;\n"+
+			"        public const int ERROR  = 5;\n" );
 		
 		result.append("\n");
     	
@@ -422,19 +343,19 @@ public class JavaCommonGenerator
 		
 		List<Production> prods = g.getProductions();
 		
-		result.append("    int[][] PRODUCTIONS =\n");
-		result.append("    {\n");
+		result.append("        public static readonly int[][] PRODUCTIONS =\n");
+		result.append("        {\n");
 		
 		for (int i=0; i<prods.size(); i++)
 		{
-			result.append("        { ");
+			result.append("            new[] { ");
 			result.append(prods.get(i).get_lhs());
 			result.append(", ");
 			result.append(prods.get(i).get_rhs().size());
 			result.append(" },\n");
 		}		
 		result.setLength(result.length()-2);
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 		
 		return result.toString();
 	}
@@ -445,21 +366,24 @@ public class JavaCommonGenerator
 				
 		int[][][] tbl = lrTable;
 		
-		result.append("    int[][][] PARSER_TABLE =\n");
-		result.append("    {\n");
+		result.append("        public static readonly int[][][] PARSER_TABLE =\n");
+		result.append("        {\n");
 		
 		int max = tbl.length;
 		if (g.getProductions().size() > max)
 			max = g.getProductions().size();
 			
 		max = (""+max).length();
-		
 		for (int i=0; i< tbl.length; i++)
 		{
-			result.append("        {");
+			result.append("            new[]\n"+
+			              "            {");
 			for (int j=0; j<tbl[i].length; j++)
 			{
-				result.append(" {");
+				if(j%5 == 0)
+					result.append("\n               ");
+				
+				result.append(" new[] { ");
 				result.append(Command.CONSTANTS[tbl[i][j][0]]);
 				result.append(", ");
 				String str = ""+tbl[i][j][1];
@@ -468,16 +392,18 @@ public class JavaCommonGenerator
 				result.append(str).append("},");
 			}
 			result.setLength(result.length()-1);
-			result.append(" },\n");
+			result.append("\n            },\n");
 		}	
 		result.setLength(result.length()-2);
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 		
 		return result.toString();
 	}
 	
 	private String genLLSyntTables(Grammar g, Options.Parser type ) throws NotLLException
 	{
+		
+		
 		StringBuffer result = new StringBuffer();
 		
 		if (type == LL)
@@ -487,10 +413,10 @@ public class JavaCommonGenerator
 			int fsa = g.getSymbols().length;
 			
 			String syntConsts = 
-			"    int START_SYMBOL = "+start+";\n"+
+			"        public const int START_SYMBOL = "+start+";\n"+
 			"\n"+
-			"    int FIRST_NON_TERMINAL    = "+fnt+";\n"+
-	    	"    int FIRST_SEMANTIC_ACTION = "+fsa+";\n";
+			"        public const int FIRST_NON_TERMINAL    = "+fnt+";\n"+
+	    	"        public const int FIRST_SEMANTIC_ACTION = "+fsa+";\n";
 	    	
 	    	result.append(syntConsts);
 	    	
@@ -531,9 +457,9 @@ public class JavaCommonGenerator
 		{
 			String t = tokens.get(i);
 			if (t.charAt(0) == '\"')
-				result.append("    int t_TOKEN_"+(i+2)+" = "+(i+2)+"; "+"//"+t+"\n");
+				result.append("        public const int t_TOKEN_"+(i+2)+" = "+(i+2)+"; "+"//"+t+"\n");
 			else
-				result.append("    int t_"+t+" = "+(i+2)+";\n");
+				result.append("        public const int t_"+t+" = "+(i+2)+";\n");
 		}
 		
 		return result.toString();
@@ -571,27 +497,33 @@ public class JavaCommonGenerator
 			}
 		}
 		
-		result.append("    int[] SCANNER_TABLE_INDEXES = \n");
-		result.append("    {\n");
-		
+		result.append("        public static readonly int[] SCANNER_TABLE_INDEXES = \n");
+		result.append("        {");
 		for (int i=0; i<sti.length; i++)
 		{
-			result.append("        ").append(sti[i]).append(",\n");
+			if(i%32 == 0)
+				result.append("\n            ");
+			result.append(sti[i]).append(", ");
 		}		
 		
 		result.setLength(result.length()-2);
-		result.append("\n    };\n\n");	
+		result.append("\n        };\n\n");	
 		
-		result.append("    int[][] SCANNER_TABLE = \n");
-		result.append("    {\n");
-
+		result.append("        public static readonly int[][] SCANNER_TABLE = \n");
+		result.append("        {");
 		for (int i=0; i<st.length; i++)
 		{
-			result.append("        {").append(st[i][0]).append(", ").append(st[i][1]).append("},\n");
+			if(i%6 == 0)
+				result.append("\n            ");
+			result.append("new[] {")
+			      .append(st[i][0])
+			      .append(", ")
+			      .append(st[i][1])
+			      .append("}, ");
 		}		
 
 		result.setLength(result.length()-2);
-		result.append("\n    };\n");	
+		result.append("\n        };\n");	
 		
 		return result.toString();
 	}
@@ -599,31 +531,34 @@ public class JavaCommonGenerator
 	private String lex_table(FiniteAutomata fa)
 	{
 		StringBuffer result = new StringBuffer();
-		
-		result.append("    int[][] SCANNER_TABLE = \n");
-		result.append("    {\n");
-		
+		result.append("        public static readonly int[][] SCANNER_TABLE =\n");
+		result.append("        {\n");
 		int count = fa.getTransitions().size();
 		int max = String.valueOf(count).length();
 		if (max == 1)
 			max = 2;
-			
+		int indent = 0;	
+		
 		for (int i=0; i<count; i++)
 		{
-			result.append("        { ");
+			result.append("            new[]\n");
+			result.append("            {\n");
+			result.append("                ");
 			for (char c = 0; c<256; c++)
 			{
 				String n = String.valueOf(fa.nextState(c, i));
 				for (int j = n.length(); j<max; j++)
 					result.append(" ");
 				result.append(n).append(", ");
+				if(++indent%16 == 0 && c<255)
+					result.append("\n                ");
 			}
 			result.setLength(result.length()-2);
-			result.append(" },\n");
+			result.append("\n			},\n");
 		}
 		result.setLength(result.length()-2);
 		
-		result.append("\n    };\n");
+		result.append("\n        };\n");
 		
 		return result.toString();
 	}
@@ -632,7 +567,9 @@ public class JavaCommonGenerator
 	{
 		StringBuffer result = new StringBuffer();
 		
-		result.append("    int[] TOKEN_STATE = {");
+		result.append("        public static readonly int[] TOKEN_STATE =\n");
+		result.append("        {\n");
+		result.append("            ");
 		int count = fa.getTransitions().size();
 		int max = String.valueOf(count).length();
 		if (max == 1)
@@ -647,7 +584,7 @@ public class JavaCommonGenerator
 			result.append(n).append(", ");
 		}
 		result.setLength(result.length()-2);		
-		result.append(" };\n");
+		result.append("\n        };\n");
 		
 		return result.toString();
 	}
@@ -662,8 +599,9 @@ public class JavaCommonGenerator
 		int count = sc.length;
 							
 		result.append(
-			"    int[] SPECIAL_CASES_INDEXES =\n"+
-			"        { ");
+			"        public static readonly int[] SPECIAL_CASES_INDEXES =\n"+
+			"        {\n"+
+			"            ");
 		
 		count = indexes.length;
 		for (int i=0; i<count; i++)
@@ -671,11 +609,12 @@ public class JavaCommonGenerator
 			result.append(indexes[i][0]).append(", ");
 		}
 		result.append(indexes[count-1][1]);
-		result.append(" };\n\n");
+		result.append("\n        };\n\n");
 				
 		result.append(
-					"    String[] SPECIAL_CASES_KEYS =\n"+
-					"        {  ");
+					"        public static readonly string[] SPECIAL_CASES_KEYS =\n"+
+					"        {\n"+
+					"            ");
 		count = sc.length;
 		for (int i=0; i<count; i++)
 		{
@@ -683,11 +622,12 @@ public class JavaCommonGenerator
 		}
 		result.setLength(result.length()-2);
 				
-		result.append(" };\n\n");
+		result.append("\n        };\n\n");
 		
 		result.append(
-					"    int[] SPECIAL_CASES_VALUES =\n"+
-					"        {  ");
+					"        public static readonly int[] SPECIAL_CASES_VALUES =\n"+
+					"        {\n"+
+					"            ");
 		count = sc.length;
 		for (int i=0; i<count; i++)
 		{
@@ -695,7 +635,7 @@ public class JavaCommonGenerator
 		}
 		result.setLength(result.length()-2);
 				
-		result.append(" };\n");
+		result.append("\n        };\n");
 		
 		return result.toString();
 	}
@@ -728,12 +668,12 @@ public class JavaCommonGenerator
 		
 		StringBuffer bfr = new StringBuffer();
 		
-		bfr.append("    int[][] PRODUCTIONS = \n");
-		bfr.append("    {\n");
+		bfr.append("        public static readonly int[][] PRODUCTIONS = \n");
+		bfr.append("        {\n");
 		
 		for (int i=0; i< productions.length; i++)
 		{
-			bfr.append("        {");
+			bfr.append("            new[] {");
 			for (int j=0; j<productions[i].length; j++)
 			{
 				bfr.append(" ");
@@ -745,7 +685,7 @@ public class JavaCommonGenerator
 	 		bfr.append(" },\n");
 		}	
 		bfr.setLength(bfr.length()-2);
-		bfr.append("\n    };\n");
+		bfr.append("\n        };\n");
 		
 		return bfr.toString();
 	}
@@ -769,12 +709,12 @@ public class JavaCommonGenerator
 		
 		StringBuffer bfr = new StringBuffer();
 		
-		bfr.append("    int[][] PARSER_TABLE =\n");
-		bfr.append("    {\n");
+		bfr.append("        public static readonly int[][] PARSER_TABLE =\n");
+		bfr.append("        {\n");
 		
 		for (int i=0; i< table.length; i++)
 		{
-			bfr.append("        {");
+			bfr.append("            new[] {");
 			for (int j=0; j<table[i].length; j++)
 			{
 				bfr.append(" ");
@@ -783,10 +723,10 @@ public class JavaCommonGenerator
 				bfr.append(table[i][j]).append(",");
 			}
 			bfr.setLength(bfr.length()-1);
-	 		bfr.append(" },\n");
+	 		bfr.append("\n            },\n");
 		}	
 		bfr.setLength(bfr.length()-2);
-		bfr.append("\n    };\n");
+		bfr.append("\n        };\n");
 		
 		return bfr.toString();
 	}
@@ -798,17 +738,17 @@ public class JavaCommonGenerator
 		StringBuffer result = new StringBuffer();
 	
 		result.append(
-		"    String[] PARSER_ERROR =\n"+
-		"    {\n");
+		"        public static readonly string[] PARSER_ERROR =\n"+
+		"        {\n");
 		
 		for (int i=0; i< count; i++)
 		{
-			result.append("        \"Erro estado "+i+"\",\n");
+			result.append("            \"Erro estado "+i+"\",\n");
 		}
 		
 		result.setLength(result.length()-2);
 		result.append(
-		"\n    };\n");
+		"\n        };\n");
 	
 		return result.toString();
 	}
@@ -819,14 +759,14 @@ public class JavaCommonGenerator
 		StringBuffer result = new StringBuffer();
 		
 		result.append(
-		"    String[] PARSER_ERROR =\n"+
-		"    {\n"+
-		"        \"\",\n"+
-		"        \"Era esperado fim de programa\",\n");
+		"        public static readonly string[] PARSER_ERROR =\n"+
+		"        {\n"+
+		"            \"\",\n"+
+		"            \"Era esperado fim de programa\",\n");
 		
 		for (int i=2; i< g.FIRST_NON_TERMINAL; i++)
 		{
-			result.append("        \"Era esperado ");
+			result.append("            \"Era esperado ");
 			for (int j=0; j<symbs[i].length(); j++)
 			{
 				switch (symbs[i].charAt(j))
@@ -841,11 +781,11 @@ public class JavaCommonGenerator
 		}
 					
 		for (int i=g.FIRST_NON_TERMINAL; i< symbs.length; i++)
-			result.append("        \""+symbs[i]+" inválido\",\n");
+			result.append("            \""+symbs[i]+" inválido\",\n");
 			
 		result.setLength(result.length()-2);
 		result.append(
-		"\n    };\n");
+		"\n        };\n");
 		
 		return result.toString();
 	}

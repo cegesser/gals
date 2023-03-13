@@ -1,9 +1,6 @@
-package gesser.gals;
-
+Ôªøpackage gesser.gals;
 import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
 public class FileFilters extends FileFilter
 {
 	private String description;
@@ -25,13 +22,12 @@ public class FileFilters extends FileFilter
 		int length = name.length();
 		return (length > extension.length()) && name.substring(length-extension.length()).equals(extension);
 	}
-
 	public String getDescription()
 	{
 		return description;
 	}
 	
-	public static final FileFilters GALS_FILTER = new FileFilters("gals", "EspecificaÁ„o Sint·tica (*.gals)");
+	public static final FileFilters GALS_FILTER = new FileFilters("gals", "Especifica√ß√£o Sint√°tica (*.gals)");
 	public static final FileFilters BNF_FILTER = new FileFilters("bnf", "Arquivo GAS (*.bnf)");
 	public static final FileFilters DIRECTORY_FILTER = new FileFilters("", "Pastas")
 	{

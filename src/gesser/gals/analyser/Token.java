@@ -1,5 +1,4 @@
-package gesser.gals.analyser;
-
+﻿package gesser.gals.analyser;
 public class Token
 {
 	private int id;
@@ -17,7 +16,6 @@ public class Token
 	{
 		return id;
 	}
-
 	public final String getLexeme()
 	{
 		return lexeme;

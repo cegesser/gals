@@ -1,14 +1,11 @@
-package gesser.gals.simulator;
-
+﻿package gesser.gals.simulator;
 import gesser.gals.analyser.LexicalError;
 import gesser.gals.analyser.Token;
 import gesser.gals.generator.OptionsDialog;
 import gesser.gals.generator.scanner.FiniteAutomata;
-
 /**
  * @author Gesser
  */
-
 public class FiniteAutomataSimulator implements BasicScanner
 {
 	private FiniteAutomata fa;
@@ -104,15 +101,12 @@ public class FiniteAutomataSimulator implements BasicScanner
 	{
 		int start = fa.getSpecialCasesIndexes()[base][0];
 		int end   = fa.getSpecialCasesIndexes()[base][1]-1;
-
 		if (!sensitive)
 			key = key.toUpperCase();
-
 		while (start <= end)
 		{
 			int half = (start+end)/2;
 			int comp = fa.getSpecialCases()[half].key.compareTo(key);
-
 			if (comp == 0)
 				return fa.getSpecialCases()[half].value;
 			else if (comp < 0)
@@ -120,7 +114,6 @@ public class FiniteAutomataSimulator implements BasicScanner
 			else  //(comp > 0)
 				end = half-1;
 		}		
-
 		return base;
 	}
 	

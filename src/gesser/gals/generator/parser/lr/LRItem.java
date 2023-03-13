@@ -1,8 +1,6 @@
-package gesser.gals.generator.parser.lr;
-
+﻿package gesser.gals.generator.parser.lr;
 import gesser.gals.generator.parser.Grammar;
 import gesser.gals.generator.parser.Production;
-
 
 public class LRItem implements Comparable
 {
@@ -33,7 +31,6 @@ public class LRItem implements Comparable
 	{
 		return lookahead;
 	}
-
 	public Production getProduction()
 	{
 		return production;
@@ -51,7 +48,6 @@ public class LRItem implements Comparable
 			return false;
 		}
 	}
-
 	public String toString()
 	{
 		StringBuffer bfr = new StringBuffer();
@@ -90,7 +86,6 @@ public class LRItem implements Comparable
 	{
 		return new LRItem(production, position, lookahead);
 	}
-
 	public int compareTo(Object o)
 	{
 		LRItem it = (LRItem) o;
@@ -107,5 +102,4 @@ public class LRItem implements Comparable
 				return lookahead - it.lookahead;
 		}
 	}
-
 }

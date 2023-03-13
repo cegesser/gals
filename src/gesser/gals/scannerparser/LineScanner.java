@@ -1,11 +1,8 @@
-package gesser.gals.scannerparser;
-
+﻿package gesser.gals.scannerparser;
 import gesser.gals.analyser.Token;
-
 /**
  * @author Gesser
  */
-
 public class LineScanner 
 {
 	public static final int ID      = 0;
@@ -87,7 +84,6 @@ public class LineScanner
 			return null;
 		}
 	}
-
 	private Token parseRE()
 	{
 		int start = pos;
@@ -118,7 +114,6 @@ public class LineScanner
 		String tok = text.substring(start, pos);
 		return new Token(RE, tok, start);
 	}
-
 	private Token getString()
 	{
 		int start = pos-1;

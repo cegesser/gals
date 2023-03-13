@@ -1,10 +1,8 @@
-package gesser.gals.gas;
-
+﻿package gesser.gals.gas;
 public interface Constants
 {
 	int EPSILON  = 0;
 	int DOLLAR   = 1;
-
 	int t_TOKEN_2 = 2; //"::="
 	int t_TOKEN_3 = 3; //";"
 	int t_TOKEN_4 = 4; //"="
@@ -20,7 +18,6 @@ public interface Constants
 	int t_S = 14;
 	int t_Vn = 15;
 	int t_Vt = 16;
-
 	int[] SCANNER_TABLE_INDEXES = 
 	{
 		0,
@@ -47,7 +44,6 @@ public interface Constants
 		1430,
 		1619
 	};
-
 	int[][] SCANNER_TABLE = 
 	{
 		{9, 1},
@@ -1670,27 +1666,20 @@ public interface Constants
 		{254, 18},
 		{255, 18}
 	};
-
 	int[] TOKEN_STATE = { 0,  0, -1, -1, -1, -1,  3, -1,  4, 10,  5,  6,  7,  8, -1, 11, -1, -1, -1, 10,  2,  9 };
-
 	int[] SPECIAL_CASES_INDEXES =
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5 };
-
 	String[] SPECIAL_CASES_KEYS =
 		{  "GRAMATICA", "P", "S", "Vn", "Vt" };
-
 	int[] SPECIAL_CASES_VALUES =
 		{  12, 13, 14, 15, 16 };
-
 	int FIRST_SEMANTIC_ACTION = 32;
-
 	int SHIFT  = 0;
 	int REDUCE = 1;
 	int ACTION = 2;
 	int ACCEPT = 3;
 	int GOTO   = 4;
 	int ERROR  = 5;
-
 	int[][][] SYNT_TABLE =
 	{
 		{ {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {SHIFT ,  3}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {GOTO  ,  1}, {GOTO  ,  2}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0} },
@@ -1757,7 +1746,6 @@ public interface Constants
 		{ {ERROR ,  0}, {ERROR ,  0}, {REDUCE, 14}, {ERROR ,  0}, {ERROR ,  0}, {SHIFT , 55}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {GOTO  , 62}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0} },
 		{ {ERROR ,  0}, {ERROR ,  0}, {REDUCE, 13}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0}, {ERROR ,  0} }
 	};
-
 	int[][] PRODUCTIONS =
 	{
 		{ 17, 5 },

@@ -1,14 +1,10 @@
-package gesser.gals.editor;
-
+﻿package gesser.gals.editor;
 import java.awt.Color;
-
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
 /**
  * @author gesser
  */
-
 public enum Style 
 {
 	NORMAL,
